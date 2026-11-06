@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = "file://" + os.path.join(HERE, "reel.html")
-DUR = 27.0
+DUR = 28.0
 
 
 def main():

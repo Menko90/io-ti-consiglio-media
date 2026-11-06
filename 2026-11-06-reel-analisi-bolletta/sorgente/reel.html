@@ -19,9 +19,9 @@ html,body{margin:0;padding:0;background:#0E2240}
 .dot{position:relative;display:inline-block}
 .dot>span{position:absolute;left:50%;top:0.04em;width:0.2em;height:0.2em;margin-left:-0.1em;border-radius:50%;background:#FFC531}
 #logo{position:absolute;left:84px;top:1420px;font-weight:700;font-size:40px;line-height:1;white-space:nowrap;color:#FFFFFF;opacity:0}
-#band{position:absolute;left:0;right:0;top:1180px;height:270px;box-sizing:border-box;padding:0 140px 0 84px;background:#FFC531;display:flex;align-items:center;gap:40px;opacity:0}
-#band .circle{width:150px;height:150px;flex-shrink:0;border-radius:50%;background:#0E2240;display:flex;align-items:center;justify-content:center}
-#band .txt{font-weight:700;font-size:56px;line-height:1.14;letter-spacing:-0.018em;color:#0E2240}
+#band{position:absolute;left:0;right:0;top:1150px;box-sizing:border-box;padding:44px 140px 46px 84px;background:#FFC531;display:flex;flex-direction:column;align-items:flex-start;gap:8px;opacity:0}
+#band .txt{font-weight:700;font-size:50px;line-height:1.14;letter-spacing:-0.018em;color:#0E2240;white-space:nowrap}
+#band .num{font-weight:700;font-size:104px;line-height:1.05;letter-spacing:-0.01em;color:#0E2240;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -93,10 +93,8 @@ html,body{margin:0;padding:0;background:#0E2240}
   </div>
 
   <div id="band">
-    <div class="circle">
-      <svg width="98" height="98" viewBox="0 0 100 100" aria-hidden="true"><path d="M35.6 66 A28 28 0 1 1 64.4 66 L62 74 H38 Z" fill="#FFC531"/><circle cx="50" cy="30" r="5.5" fill="#0E2240"/><rect x="45.5" y="39" width="9" height="22" rx="4.5" fill="#0E2240"/><rect x="39" y="78" width="22" height="5.5" rx="2.75" fill="#FFFFFF"/><rect x="42.5" y="86.5" width="15" height="5.5" rx="2.75" fill="#FFFFFF"/></svg>
-    </div>
-    <div class="txt"><div>Mandami la foto</div><div>della bolletta</div><div>su WhatsApp.</div></div>
+    <div class="txt"><div>Mandami la foto della bolletta</div><div>su WhatsApp:</div></div>
+    <div class="num">375 504 9079</div>
   </div>
 
   <div id="logo" data-logo="io ti consiglio"></div>
@@ -106,7 +104,7 @@ html,body{margin:0;padding:0;background:#0E2240}
 const WIRE="M-20 106.3 L-8 101.1 L4 96.0 L16 91.0 L28 86.1 L40 81.3 L52 76.7 L64 72.3 L76 68.1 L88 64.2 L100 60.4 L112 57.0 L124 53.8 L136 50.9 L148 48.4 L160 46.1 L172 44.2 L184 42.7 L196 41.5 L208 40.6 L220 40.1 L232 40.0 L244 40.2 L256 40.9 L268 41.8 L280 43.2 L292 44.8 L304 46.8 L316 49.2 L328 51.9 L340 54.8 L352 58.1 L364 61.7 L376 65.5 L388 69.5 L400 73.8 L412 78.3 L424 82.9 L436 87.7 L448 92.7 L460 97.7 L472 102.8 L484 108.0 L496 113.3 L508 118.5 L520 123.7 L532 128.9 L544 134.0 L556 139.0 L568 143.9 L580 148.7 L592 153.3 L604 157.7 L616 161.9 L628 165.8 L640 169.6 L652 173.0 L664 176.2 L676 179.1 L688 181.6 L700 183.9 L712 185.8 L724 187.3 L736 188.5 L748 189.4 L760 189.9 L772 190.0 L784 189.8 L796 189.1 L808 188.2 L820 186.8 L832 185.2 L844 183.2 L856 180.8 L868 178.1 L880 175.2 L892 171.9 L904 168.3 L916 164.5 L928 160.5 L940 156.2 L952 151.7 L964 147.1 L976 142.3 L988 137.3 L1000 132.3 L1012 127.2 L1024 122.0 L1036 116.7 L1048 111.5 L1060 106.3 L1072 101.1 L1084 96.0 L1096 91.0";
 document.getElementById('wire').setAttribute('d',WIRE);
 
-const DUR=27.0;
+const DUR=28.0;
 const S=[
   {id:'s1', a:0.0,  b:3.6},
   {id:'s2', a:3.6,  b:7.9},
@@ -180,7 +178,7 @@ function fitScene(sc){
   return k;
 }
 function placeScene(sc){
-  const top0=650, bot=(sc.id==='s6')?1140:1390;
+  const top0=650, bot=(sc.id==='s6')?1110:1390;
   sc.el.style.visibility='visible';
   const h=sc.el.offsetHeight;
   sc.el.style.top=Math.round(top0+(bot-top0-h)/2)+'px';
