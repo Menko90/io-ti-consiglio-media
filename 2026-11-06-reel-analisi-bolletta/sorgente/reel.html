@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Reel · Analisi bolletta · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;font-style:normal;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;font-style:normal;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;padding:0;background:#0E2240}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0E2240;font-family:'PoppinsLocal',sans-serif;color:#FFFFFF}
+/* testo tra 84 px a sinistra e 140 px a destra: fuori dalla colonna delle icone di Instagram */
+.scene{position:absolute;left:84px;width:856px;top:700px;visibility:hidden}
+.item{opacity:0;will-change:transform,opacity}
+.h{font-weight:700;line-height:1.08;letter-spacing:-0.021em;white-space:nowrap}
+.sub{font-weight:500;color:#D5DDEA;line-height:1.32;text-wrap:balance}
+.y{color:#FFC531}
+.badge{width:150px;height:150px;border-radius:50%;background:#FFC531;color:#0E2240;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:92px;line-height:1;transform-origin:50% 50%}
+.badge span{display:block;transform:translateY(4px)}
+.dot{position:relative;display:inline-block}
+.dot>span{position:absolute;left:50%;top:0.04em;width:0.2em;height:0.2em;margin-left:-0.1em;border-radius:50%;background:#FFC531}
+#logo{position:absolute;left:84px;top:1420px;font-weight:700;font-size:40px;line-height:1;white-space:nowrap;color:#FFFFFF;opacity:0}
+#band{position:absolute;left:0;right:0;top:1180px;height:270px;box-sizing:border-box;padding:0 140px 0 84px;background:#FFC531;display:flex;align-items:center;gap:40px;opacity:0}
+#band .circle{width:150px;height:150px;flex-shrink:0;border-radius:50%;background:#0E2240;display:flex;align-items:center;justify-content:center}
+#band .txt{font-weight:700;font-size:56px;line-height:1.14;letter-spacing:-0.018em;color:#0E2240}
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0" aria-hidden="true">
+    <g transform="translate(0 200)">
+      <path id="wire" fill="none" stroke="#FFC531" stroke-width="5"/>
+      <g id="bulbs"></g>
+    </g>
+  </svg>
+
+  <!-- 1 · Gancio -->
+  <div class="scene" id="s1">
+    <div class="h item" style="font-size:132px">La tua</div>
+    <div class="h item" style="font-size:132px">bolletta</div>
+    <div class="h item y" style="font-size:132px">è giusta?</div>
+    <div class="sub item" style="font-size:52px;margin-top:40px">Te lo dico io. Gratis.</div>
+  </div>
+
+  <!-- 2 · Passo 1 -->
+  <div class="scene" id="s2">
+    <div class="badge item" data-pop="1"><span>1</span></div>
+    <div style="height:44px"></div>
+    <div class="h item" style="font-size:98px">Mandami una foto</div>
+    <div class="h item" style="font-size:98px">della bolletta</div>
+    <div class="sub item" style="font-size:48px;margin-top:34px">Su WhatsApp: luce, gas, fibra o telefono.</div>
+  </div>
+
+  <!-- 3 · Passo 2 -->
+  <div class="scene" id="s3">
+    <div class="badge item" data-pop="1"><span>2</span></div>
+    <div style="height:44px"></div>
+    <div class="h item" style="font-size:112px">La analizzo</div>
+    <div class="h item y" style="font-size:112px">gratis.</div>
+    <div class="sub item" style="font-size:48px;margin-top:34px">Voce per voce: prezzo, costi fissi e consumi.</div>
+  </div>
+
+  <!-- 4 · Passo 3 -->
+  <div class="scene" id="s4">
+    <div class="badge item" data-pop="1"><span>3</span></div>
+    <div style="height:44px"></div>
+    <div class="h item" style="font-size:112px">Puoi</div>
+    <div class="h item" style="font-size:112px">risparmiare?</div>
+    <div class="sub item" style="font-size:48px;margin-top:34px">Ti spiego come, in parole semplici. Poi decidi tu.</div>
+  </div>
+
+  <!-- 5a · La svolta -->
+  <div class="scene" id="s5a">
+    <div class="h item" style="font-size:120px">E se paghi</div>
+    <div class="h item" style="font-size:120px">già il giusto?</div>
+  </div>
+
+  <!-- 5b · Nessun cambio -->
+  <div class="scene" id="s5b">
+    <div class="badge item" data-pop="1">
+      <svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true"><path id="tick" d="M22 52 L42 72 L80 32" fill="none" stroke="#0E2240" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="84" stroke-dashoffset="84"/></svg>
+    </div>
+    <div style="height:44px"></div>
+    <div class="h item" style="font-size:110px">Te lo dico.</div>
+    <div class="h item y" style="font-size:110px">E non cambiamo</div>
+    <div class="h item y" style="font-size:110px">niente.</div>
+  </div>
+
+  <!-- 6 · Chiusura -->
+  <div class="scene" id="s6">
+    <div class="h item" style="font-size:118px" data-logo="io ti consiglio:"></div>
+    <div class="h item y" style="font-size:118px">solo se</div>
+    <div class="h item y" style="font-size:118px">ti conviene.</div>
+  </div>
+
+  <div id="band">
+    <div class="circle">
+      <svg width="98" height="98" viewBox="0 0 100 100" aria-hidden="true"><path d="M35.6 66 A28 28 0 1 1 64.4 66 L62 74 H38 Z" fill="#FFC531"/><circle cx="50" cy="30" r="5.5" fill="#0E2240"/><rect x="45.5" y="39" width="9" height="22" rx="4.5" fill="#0E2240"/><rect x="39" y="78" width="22" height="5.5" rx="2.75" fill="#FFFFFF"/><rect x="42.5" y="86.5" width="15" height="5.5" rx="2.75" fill="#FFFFFF"/></svg>
+    </div>
+    <div class="txt"><div>Mandami la foto</div><div>della bolletta</div><div>su WhatsApp.</div></div>
+  </div>
+
+  <div id="logo" data-logo="io ti consiglio"></div>
+</div>
+
+<script>
+const WIRE="M-20 106.3 L-8 101.1 L4 96.0 L16 91.0 L28 86.1 L40 81.3 L52 76.7 L64 72.3 L76 68.1 L88 64.2 L100 60.4 L112 57.0 L124 53.8 L136 50.9 L148 48.4 L160 46.1 L172 44.2 L184 42.7 L196 41.5 L208 40.6 L220 40.1 L232 40.0 L244 40.2 L256 40.9 L268 41.8 L280 43.2 L292 44.8 L304 46.8 L316 49.2 L328 51.9 L340 54.8 L352 58.1 L364 61.7 L376 65.5 L388 69.5 L400 73.8 L412 78.3 L424 82.9 L436 87.7 L448 92.7 L460 97.7 L472 102.8 L484 108.0 L496 113.3 L508 118.5 L520 123.7 L532 128.9 L544 134.0 L556 139.0 L568 143.9 L580 148.7 L592 153.3 L604 157.7 L616 161.9 L628 165.8 L640 169.6 L652 173.0 L664 176.2 L676 179.1 L688 181.6 L700 183.9 L712 185.8 L724 187.3 L736 188.5 L748 189.4 L760 189.9 L772 190.0 L784 189.8 L796 189.1 L808 188.2 L820 186.8 L832 185.2 L844 183.2 L856 180.8 L868 178.1 L880 175.2 L892 171.9 L904 168.3 L916 164.5 L928 160.5 L940 156.2 L952 151.7 L964 147.1 L976 142.3 L988 137.3 L1000 132.3 L1012 127.2 L1024 122.0 L1036 116.7 L1048 111.5 L1060 106.3 L1072 101.1 L1084 96.0 L1096 91.0";
+document.getElementById('wire').setAttribute('d',WIRE);
+
+const DUR=27.0;
+const S=[
+  {id:'s1', a:0.0,  b:3.6},
+  {id:'s2', a:3.6,  b:7.9},
+  {id:'s3', a:7.9,  b:12.2},
+  {id:'s4', a:12.2, b:16.3},
+  {id:'s5a',a:16.3, b:18.4},
+  {id:'s5b',a:18.4, b:21.8},
+  {id:'s6', a:21.8, b:999}
+];
+// una lampadina si accende a ogni passo
+const BULB_ON=[3.75, 8.05, 12.35, 18.55, 21.95];
+
+const clamp=(x)=>Math.max(0,Math.min(1,x));
+const easeOutCubic=(p)=>1-Math.pow(1-p,3);
+const easeInCubic=(p)=>p*p*p;
+const easeOutBack=(p)=>{const s=1.70158;const q=p-1;return 1+(s+1)*q*q*q+s*q*q;};
+
+function logoHTML(text){return text.replace(/i/g,'<span class="dot">ı<span></span></span>');}
+document.querySelectorAll('[data-logo]').forEach(el=>{el.innerHTML=logoHTML(el.dataset.logo);});
+
+// lampadine
+const NS='http://www.w3.org/2000/svg';
+const BULBS=[[5.0,280.3],[200.0,279.2],[415.0,360.3],[630.0,417.7],[825.0,380.5]];
+const BULB_D="M35.6 66 A28 28 0 1 1 64.4 66 L62 74 H38 Z";
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const gRoot=document.getElementById('bulbs');
+const bulbEls=BULBS.map(([tx,ty])=>{
+  const sway=mk('g',{},gRoot);
+  const ax=tx+125, ay=ty-2.5*93;   // punto di aggancio al filo
+  const cx=tx+125, cy=ty-2.5*42;   // centro del vetro
+  const rays=mk('g',{opacity:0},sway);
+  const rayEls=[30,60,90,120,150].map(a=>{const r=a*Math.PI/180;return {el:mk('line',{stroke:'#FFC531','stroke-width':9,'stroke-linecap':'round'},rays),c:Math.cos(r),s:Math.sin(r)};});
+  const g=mk('g',{transform:`translate(${tx} ${ty}) scale(2.5 -2.5)`},sway);
+  const outline=mk('path',{d:BULB_D,fill:'none',stroke:'#FFC531','stroke-width':4.5,'stroke-linejoin':'round'},g);
+  const capOff=[mk('rect',{x:39,y:79,width:22,height:5.5,rx:2.75,fill:'#FFC531'},g),mk('rect',{x:42.5,y:87.5,width:15,height:5.5,rx:2.75,fill:'#FFC531'},g)];
+  const fill=mk('path',{d:BULB_D,fill:'#FFC531',opacity:0},g);
+  const capOn=[mk('rect',{x:39,y:78,width:22,height:5.5,rx:2.75,fill:'#FFFFFF',opacity:0},g),mk('rect',{x:42.5,y:86.5,width:15,height:5.5,rx:2.75,fill:'#FFFFFF',opacity:0},g)];
+  return {sway,ax,ay,cx,cy,rays,rayEls,outline,capOff,fill,capOn};
+});
+
+function renderBulbs(t){
+  bulbEls.forEach((b,i)=>{
+    const on=BULB_ON[i];
+    let ang=1.8*Math.sin(2*Math.PI*t/3.4+i*1.1);
+    if(t>on){const d=t-on;ang+=7*Math.exp(-3.2*d)*Math.sin(2*Math.PI*1.5*d);}
+    b.sway.setAttribute('transform',`rotate(${ang.toFixed(3)} ${b.ax} ${b.ay})`);
+    const f=easeOutCubic(clamp((t-on)/0.2));
+    b.fill.setAttribute('opacity',f.toFixed(3));
+    b.outline.setAttribute('opacity',(1-f).toFixed(3));
+    b.capOff.forEach(e=>e.setAttribute('opacity',(1-f).toFixed(3)));
+    b.capOn.forEach(e=>e.setAttribute('opacity',f.toFixed(3)));
+    const r=clamp((t-on-0.05)/0.45);
+    const len=Math.max(0.01,20*easeOutBack(r));
+    b.rays.setAttribute('opacity',clamp(r*4).toFixed(3));
+    b.rayEls.forEach(R=>{
+      const r1=82.5,r2=82.5+len;
+      R.el.setAttribute('x1',(b.cx+r1*R.c).toFixed(2));R.el.setAttribute('y1',(b.cy+r1*R.s).toFixed(2));
+      R.el.setAttribute('x2',(b.cx+r2*R.c).toFixed(2));R.el.setAttribute('y2',(b.cy+r2*R.s).toFixed(2));
+    });
+  });
+}
+
+const scenes=S.map(s=>{const el=document.getElementById(s.id);return {...s,el,items:[...el.querySelectorAll('.item')]};});
+
+function fitScene(sc){
+  const lines=[...sc.el.querySelectorAll('.h')];
+  const maxW=sc.el.clientWidth;
+  let k=1;
+  lines.forEach(l=>{const w=l.scrollWidth;if(w>maxW)k=Math.min(k,maxW/w);});
+  if(k<1)lines.forEach(l=>{const fs=parseFloat(getComputedStyle(l).fontSize);l.style.fontSize=Math.floor(fs*k)+'px';});
+  return k;
+}
+function placeScene(sc){
+  const top0=650, bot=(sc.id==='s6')?1140:1390;
+  sc.el.style.visibility='visible';
+  const h=sc.el.offsetHeight;
+  sc.el.style.top=Math.round(top0+(bot-top0-h)/2)+'px';
+  sc.el.style.visibility='hidden';
+}
+
+function renderScenes(t){
+  scenes.forEach(sc=>{
+    if(t<sc.a-0.0001||t>=sc.b){sc.el.style.visibility='hidden';return;}
+    sc.el.style.visibility='visible';
+    let so=1,sy=0;
+    if(sc.b<900){const e=easeInCubic(clamp((t-(sc.b-0.32))/0.32));so=1-e;sy=-34*e;}
+    sc.el.style.opacity=so;
+    sc.el.style.transform=`translateY(${sy.toFixed(2)}px)`;
+    const base=sc.a+(sc.id==='s1'?0.0:0.12);
+    sc.items.forEach((it,k)=>{
+      const st=base+0.11*k;
+      if(it.dataset.pop){
+        it.style.opacity=clamp((t-st)/0.12);
+        it.style.transform=`scale(${easeOutBack(clamp((t-st)/0.45)).toFixed(4)})`;
+      }else{
+        const e=easeOutCubic(clamp((t-st)/0.5));
+        it.style.opacity=e;
+        it.style.transform=`translateY(${((1-e)*46).toFixed(2)}px)`;
+      }
+    });
+  });
+  const s5b=S[5], s6=S[6];
+  const pt=clamp((t-(s5b.a+0.12+0.3))/0.35);
+  document.getElementById('tick').setAttribute('stroke-dashoffset',(84*(1-easeOutCubic(pt))).toFixed(2));
+  const band=document.getElementById('band');
+  const eb=easeOutCubic(clamp((t-(s6.a+0.6))/0.55));
+  band.style.opacity=eb;band.style.transform=`translateY(${((1-eb)*70).toFixed(2)}px)`;
+  const logo=document.getElementById('logo');
+  let lo=clamp((t-0.1)/0.4);if(t>=s6.a)lo=1-clamp((t-s6.a)/0.3);
+  logo.style.opacity=lo;
+}
+
+window.render=function(t){renderBulbs(t);renderScenes(t);};
+
+window.READY=false;
+Promise.all([document.fonts.load('700 100px PoppinsLocal'),document.fonts.load('500 100px PoppinsLocal')]).then(()=>document.fonts.ready).then(()=>{
+  const fit={};
+  scenes.forEach(sc=>{fit[sc.id]=fitScene(sc);placeScene(sc);});
+  window.FIT=fit;
+  window.FONTS=[...document.fonts].map(f=>f.family+' '+f.weight+' '+f.status);
+  window.render(0);
+  window.READY=true;
+});
+</script>
+</body>
+</html>
