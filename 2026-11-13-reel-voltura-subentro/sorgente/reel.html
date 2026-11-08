@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Reel · Voltura, subentro o allaccio · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;font-style:normal;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;font-style:normal;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;padding:0;background:#0E2240}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0E2240;font-family:'PoppinsLocal',sans-serif;color:#FFFFFF}
+/* testo tra 84 px a sinistra e 140 px a destra, tra 250 e 1450 px in altezza */
+.scene{position:absolute;left:84px;width:856px;top:960px;visibility:hidden}
+.gfx{position:absolute;left:0;top:640px;width:1080px;height:320px;visibility:hidden;overflow:visible}
+.item{opacity:0;will-change:transform,opacity}
+.h{font-weight:700;line-height:1.08;letter-spacing:-0.021em;white-space:nowrap}
+.sub{font-weight:500;color:#D5DDEA;line-height:1.32;white-space:nowrap}
+.y{color:#FFC531}
+.dot{position:relative;display:inline-block}
+.dot>span{position:absolute;left:50%;top:0.04em;width:0.2em;height:0.2em;margin-left:-0.1em;border-radius:50%;background:#FFC531}
+#logo{position:absolute;left:84px;top:1392px;font-weight:700;font-size:40px;line-height:1;white-space:nowrap;color:#FFFFFF}
+#band{position:absolute;left:0;right:0;top:1130px;box-sizing:border-box;padding:44px 140px 46px 84px;background:#FFC531;display:flex;flex-direction:column;align-items:flex-start;gap:6px;opacity:0}
+#band .txt{font-weight:700;font-size:54px;line-height:1.14;letter-spacing:-0.018em;color:#0E2240;white-space:nowrap}
+#band .num{font-weight:700;font-size:104px;line-height:1.05;letter-spacing:-0.01em;color:#0E2240;white-space:nowrap}
+.row{display:flex;align-items:center;gap:40px;margin-top:34px}
+.box{width:112px;height:112px;flex-shrink:0;border-radius:26px;box-sizing:border-box;border:10px solid #FFC531;display:flex;align-items:center;justify-content:center}
+.row .lbl{font-weight:700;font-size:72px;line-height:1;letter-spacing:-0.02em;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0" aria-hidden="true">
+    <g transform="translate(0 200)">
+      <path id="wire" fill="none" stroke="#FFC531" stroke-width="5"/>
+      <g id="bulbs"></g>
+    </g>
+  </svg>
+
+  <!-- GRAFICHE (fascia 640–960) -->
+  <!-- 1 · casa -->
+  <svg class="gfx" id="g1" viewBox="0 0 1080 320" aria-hidden="true">
+    <g transform="translate(540 0)">
+      <path d="M-190 140 L0 10 L190 140" fill="none" stroke="#FFC531" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M-150 112 V300 H150 V112" fill="none" stroke="#FFC531" stroke-width="16" stroke-linejoin="round"/>
+      <rect id="g1w1" x="-110" y="150" width="70" height="66" rx="10" fill="#FFC531" fill-opacity="0" stroke="#FFC531" stroke-width="12"/>
+      <rect id="g1w2" x="40" y="150" width="70" height="66" rx="10" fill="#FFC531" fill-opacity="0" stroke="#FFC531" stroke-width="12"/>
+      <path d="M-34 300 V236 H34 V300" fill="none" stroke="#FFC531" stroke-width="12" stroke-linejoin="round"/>
+    </g>
+  </svg>
+
+  <!-- 2 · voltura: contatore acceso → nuovo intestatario -->
+  <svg class="gfx" id="g2" viewBox="0 0 1080 320" aria-hidden="true">
+    <g transform="translate(200 10)">
+      <rect x="6" y="6" width="248" height="288" rx="34" fill="none" stroke="#FFC531" stroke-width="14"/>
+      <rect x="44" y="42" width="172" height="86" rx="14" fill="#FFC531"/>
+      <path d="M142 150 L96 216 H128 L114 266 L166 196 H133 Z" fill="#FFC531" stroke="#FFC531" stroke-width="8" stroke-linejoin="round"/>
+    </g>
+    <path id="g2arrow" d="M500 160 H640 M600 118 L642 160 L600 202" fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="320" stroke-dashoffset="320"/>
+    <g id="g2person" transform="translate(800 160)">
+      <circle cx="0" cy="-62" r="52" fill="none" stroke="#FFC531" stroke-width="14"/>
+      <path d="M-100 128 C-100 40 -60 18 0 18 C60 18 100 40 100 128" fill="none" stroke="#FFC531" stroke-width="14" stroke-linecap="round"/>
+      <g id="g2check" transform="translate(78 64)">
+        <circle r="44" fill="#FFC531"/>
+        <path d="M-20 0 L-6 14 L22 -14" fill="none" stroke="#0E2240" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- 3 · subentro: contatore spento che si riaccende -->
+  <svg class="gfx" id="g3" viewBox="0 0 1080 320" aria-hidden="true">
+    <g transform="translate(410 10)">
+      <rect id="g3body" x="6" y="6" width="248" height="288" rx="34" fill="none" stroke="#5B6B86" stroke-width="14"/>
+      <rect id="g3disp" x="44" y="42" width="172" height="86" rx="14" fill="#5B6B86"/>
+      <path id="g3bolt" d="M142 150 L96 216 H128 L114 266 L166 196 H133 Z" fill="#FFC531" fill-opacity="0" stroke="#5B6B86" stroke-width="8" stroke-linejoin="round"/>
+      <g id="g3rays" stroke="#FFC531" stroke-width="14" stroke-linecap="round" opacity="0"></g>
+    </g>
+  </svg>
+
+  <!-- 4 · allaccio: il cavo arriva alla casa -->
+  <svg class="gfx" id="g4" viewBox="0 0 1080 320" aria-hidden="true">
+    <path d="M200 300 V40 M150 70 H250" fill="none" stroke="#D5DDEA" stroke-width="14" stroke-linecap="round"/>
+    <path id="g4cable" d="M250 70 Q470 190 690 150" fill="none" stroke="#FFC531" stroke-width="10" stroke-linecap="round" stroke-dasharray="480" stroke-dashoffset="480"/>
+    <g transform="translate(800 0)">
+      <path d="M-150 140 L0 30 L150 140" fill="none" stroke="#FFC531" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M-115 116 V300 H115 V116" fill="none" stroke="#FFC531" stroke-width="16" stroke-linejoin="round"/>
+      <g id="g4bolt" transform="translate(0 215)">
+        <path d="M14 -62 L-30 4 H2 L-12 56 L40 -18 H6 Z" fill="#FFC531" stroke="#FFC531" stroke-width="8" stroke-linejoin="round"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- TESTI -->
+  <div class="scene" id="s1">
+    <div class="h item" style="font-size:150px">Cambi <span class="y">casa?</span></div>
+    <div class="sub item" style="font-size:56px;margin-top:26px">Luce e gas: cosa ti serve.</div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="h item" style="font-size:86px">Contatore attivo?</div>
+    <div class="h item y" style="font-size:160px">Voltura.</div>
+    <div class="sub item" style="font-size:52px;margin-top:22px">Cambia solo l’intestatario.</div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="h item" style="font-size:86px">Contatore chiuso?</div>
+    <div class="h item y" style="font-size:160px">Subentro.</div>
+    <div class="sub item" style="font-size:52px;margin-top:22px">Si riattiva a tuo nome.</div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="h item" style="font-size:86px">Nessun contatore?</div>
+    <div class="h item y" style="font-size:160px">Allaccio.</div>
+    <div class="sub item" style="font-size:52px;margin-top:22px">Nuovo collegamento alla rete.</div>
+  </div>
+
+  <div class="scene" id="s5" style="top:680px">
+    <div class="h item" style="font-size:120px">Tieni <span class="y">pronti:</span></div>
+    <div class="row item" data-pop="1"><div class="box"><svg width="70" height="70" viewBox="0 0 70 70"><path class="tk" d="M14 36 L29 51 L57 21" fill="none" stroke="#0E2240" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70"/></svg></div><div class="lbl">Codice POD/PDR</div></div>
+    <div class="row item" data-pop="1"><div class="box"><svg width="70" height="70" viewBox="0 0 70 70"><path class="tk" d="M14 36 L29 51 L57 21" fill="none" stroke="#0E2240" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70"/></svg></div><div class="lbl">Lettura contatore</div></div>
+    <div class="row item" data-pop="1"><div class="box"><svg width="70" height="70" viewBox="0 0 70 70"><path class="tk" d="M14 36 L29 51 L57 21" fill="none" stroke="#0E2240" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70"/></svg></div><div class="lbl">Documento</div></div>
+  </div>
+
+  <div class="scene" id="s6" style="top:690px">
+    <div class="h item" style="font-size:124px" data-logo="io ti consiglio:"></div>
+    <div class="h item y" style="font-size:124px">ti aiuto io.</div>
+  </div>
+
+  <div id="band">
+    <div class="txt">Foto della bolletta su WhatsApp:</div>
+    <div class="num">375 504 9079</div>
+  </div>
+
+  <div id="logo" data-logo="io ti consiglio"></div>
+</div>
+
+<script>
+const WIRE="M-20 106.3 L-8 101.1 L4 96.0 L16 91.0 L28 86.1 L40 81.3 L52 76.7 L64 72.3 L76 68.1 L88 64.2 L100 60.4 L112 57.0 L124 53.8 L136 50.9 L148 48.4 L160 46.1 L172 44.2 L184 42.7 L196 41.5 L208 40.6 L220 40.1 L232 40.0 L244 40.2 L256 40.9 L268 41.8 L280 43.2 L292 44.8 L304 46.8 L316 49.2 L328 51.9 L340 54.8 L352 58.1 L364 61.7 L376 65.5 L388 69.5 L400 73.8 L412 78.3 L424 82.9 L436 87.7 L448 92.7 L460 97.7 L472 102.8 L484 108.0 L496 113.3 L508 118.5 L520 123.7 L532 128.9 L544 134.0 L556 139.0 L568 143.9 L580 148.7 L592 153.3 L604 157.7 L616 161.9 L628 165.8 L640 169.6 L652 173.0 L664 176.2 L676 179.1 L688 181.6 L700 183.9 L712 185.8 L724 187.3 L736 188.5 L748 189.4 L760 189.9 L772 190.0 L784 189.8 L796 189.1 L808 188.2 L820 186.8 L832 185.2 L844 183.2 L856 180.8 L868 178.1 L880 175.2 L892 171.9 L904 168.3 L916 164.5 L928 160.5 L940 156.2 L952 151.7 L964 147.1 L976 142.3 L988 137.3 L1000 132.3 L1012 127.2 L1024 122.0 L1036 116.7 L1048 111.5 L1060 106.3 L1072 101.1 L1084 96.0 L1096 91.0";
+document.getElementById('wire').setAttribute('d',WIRE);
+
+const DUR=19.0;
+const S=[
+  {id:'s1', g:'g1', a:0.0,  b:3.2},
+  {id:'s2', g:'g2', a:3.2,  b:6.5},
+  {id:'s3', g:'g3', a:6.5,  b:9.8},
+  {id:'s4', g:'g4', a:9.8,  b:13.1},
+  {id:'s5', g:null, a:13.1, b:16.0},
+  {id:'s6', g:null, a:16.0, b:999}
+];
+// una lampadina si accende a ogni passo
+const BULB_ON=[0.45, 4.3, 7.45, 11.15, 13.6];
+
+const clamp=(x)=>Math.max(0,Math.min(1,x));
+const easeOutCubic=(p)=>1-Math.pow(1-p,3);
+const easeInCubic=(p)=>p*p*p;
+const easeOutBack=(p)=>{const s=1.70158;const q=p-1;return 1+(s+1)*q*q*q+s*q*q;};
+const lerp=(a,b,p)=>a+(b-a)*p;
+function mixHex(c1,c2,p){const a=parseInt(c1.slice(1),16),b=parseInt(c2.slice(1),16);const r=Math.round(lerp(a>>16,b>>16,p)),g=Math.round(lerp((a>>8)&255,(b>>8)&255,p)),bl=Math.round(lerp(a&255,b&255,p));return '#'+((1<<24)+(r<<16)+(g<<8)+bl).toString(16).slice(1);}
+
+function logoHTML(text){return text.replace(/i/g,'<span class="dot">ı<span></span></span>');}
+document.querySelectorAll('[data-logo]').forEach(el=>{el.innerHTML=logoHTML(el.dataset.logo);});
+
+// lampadine
+const NS='http://www.w3.org/2000/svg';
+const BULBS=[[5.0,280.3],[200.0,279.2],[415.0,360.3],[630.0,417.7],[825.0,380.5]];
+const BULB_D="M35.6 66 A28 28 0 1 1 64.4 66 L62 74 H38 Z";
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const gRoot=document.getElementById('bulbs');
+const bulbEls=BULBS.map(([tx,ty])=>{
+  const sway=mk('g',{},gRoot);
+  const ax=tx+125, ay=ty-2.5*93;
+  const cx=tx+125, cy=ty-2.5*42;
+  const rays=mk('g',{opacity:0},sway);
+  const rayEls=[30,60,90,120,150].map(a=>{const r=a*Math.PI/180;return {el:mk('line',{stroke:'#FFC531','stroke-width':9,'stroke-linecap':'round'},rays),c:Math.cos(r),s:Math.sin(r)};});
+  const g=mk('g',{transform:`translate(${tx} ${ty}) scale(2.5 -2.5)`},sway);
+  const outline=mk('path',{d:BULB_D,fill:'none',stroke:'#FFC531','stroke-width':4.5,'stroke-linejoin':'round'},g);
+  const capOff=[mk('rect',{x:39,y:79,width:22,height:5.5,rx:2.75,fill:'#FFC531'},g),mk('rect',{x:42.5,y:87.5,width:15,height:5.5,rx:2.75,fill:'#FFC531'},g)];
+  const fill=mk('path',{d:BULB_D,fill:'#FFC531',opacity:0},g);
+  const capOn=[mk('rect',{x:39,y:78,width:22,height:5.5,rx:2.75,fill:'#FFFFFF',opacity:0},g),mk('rect',{x:42.5,y:86.5,width:15,height:5.5,rx:2.75,fill:'#FFFFFF',opacity:0},g)];
+  return {sway,ax,ay,cx,cy,rays,rayEls,outline,capOff,fill,capOn};
+});
+function renderBulbs(t){
+  bulbEls.forEach((b,i)=>{
+    const on=BULB_ON[i];
+    let ang=1.8*Math.sin(2*Math.PI*t/3.4+i*1.1);
+    if(t>on){const d=t-on;ang+=7*Math.exp(-3.2*d)*Math.sin(2*Math.PI*1.5*d);}
+    b.sway.setAttribute('transform',`rotate(${ang.toFixed(3)} ${b.ax} ${b.ay})`);
+    const f=easeOutCubic(clamp((t-on)/0.2));
+    b.fill.setAttribute('opacity',f.toFixed(3));
+    b.outline.setAttribute('opacity',(1-f).toFixed(3));
+    b.capOff.forEach(e=>e.setAttribute('opacity',(1-f).toFixed(3)));
+    b.capOn.forEach(e=>e.setAttribute('opacity',f.toFixed(3)));
+    const r=clamp((t-on-0.05)/0.45);
+    const len=Math.max(0.01,20*easeOutBack(r));
+    b.rays.setAttribute('opacity',clamp(r*4).toFixed(3));
+    b.rayEls.forEach(R=>{
+      const r1=82.5,r2=82.5+len;
+      R.el.setAttribute('x1',(b.cx+r1*R.c).toFixed(2));R.el.setAttribute('y1',(b.cy+r1*R.s).toFixed(2));
+      R.el.setAttribute('x2',(b.cx+r2*R.c).toFixed(2));R.el.setAttribute('y2',(b.cy+r2*R.s).toFixed(2));
+    });
+  });
+}
+
+// raggi del contatore che si riaccende (scena 3)
+const g3rays=document.getElementById('g3rays');
+const g3rayEls=[-150,-120,-90,-60,-30].map(a=>{const r=a*Math.PI/180;return {el:mk('line',{},g3rays),c:Math.cos(r),s:Math.sin(r)};});
+
+const $=(id)=>document.getElementById(id);
+const scenes=S.map(s=>{const el=$(s.id);return {...s,el,gel:s.g?$(s.g):null,items:[...el.querySelectorAll('.item')]};});
+
+function fitScene(sc){
+  const lines=[...sc.el.querySelectorAll('.h,.sub,.row')];
+  const maxW=sc.el.clientWidth;
+  let worst=1;
+  lines.forEach(l=>{const w=l.scrollWidth;if(w>maxW){const k=maxW/w;worst=Math.min(worst,k);
+    const tgt=l.classList.contains('row')?l.querySelector('.lbl'):l;const fs=parseFloat(getComputedStyle(tgt).fontSize);tgt.style.fontSize=Math.floor(fs*k)+'px';}});
+  return worst;
+}
+function placeScene(sc){
+  if(sc.id==='s5'||sc.id==='s6')return;
+  sc.el.style.visibility='visible';
+  const h=sc.el.offsetHeight;
+  sc.el.style.top=Math.round(990+(1360-990-h)/2)+'px';
+  sc.el.style.visibility='hidden';
+}
+
+// animazioni delle grafiche, lt = tempo dall'inizio della scena
+const GFX={
+  g1(lt,t){
+    $('g1w1').setAttribute('fill-opacity',easeOutCubic(clamp((t-0.55)/0.25)).toFixed(3));
+    $('g1w2').setAttribute('fill-opacity',easeOutCubic(clamp((t-0.85)/0.25)).toFixed(3));
+  },
+  g2(lt){
+    $('g2arrow').setAttribute('stroke-dashoffset',(320*(1-easeOutCubic(clamp((lt-0.45)/0.45)))).toFixed(1));
+    const p=easeOutBack(clamp((lt-0.75)/0.45));
+    $('g2person').setAttribute('transform',`translate(800 160) scale(${p.toFixed(4)})`);
+    const c=easeOutBack(clamp((lt-1.1)/0.4));
+    $('g2check').setAttribute('transform',`translate(78 64) scale(${c.toFixed(4)})`);
+  },
+  g3(lt){
+    const f=easeOutCubic(clamp((lt-0.95)/0.25));
+    const col=mixHex('#5B6B86','#FFC531',f);
+    $('g3body').setAttribute('stroke',col);
+    $('g3disp').setAttribute('fill',col);
+    $('g3bolt').setAttribute('stroke',col);
+    $('g3bolt').setAttribute('fill-opacity',f.toFixed(3));
+    const r=clamp((lt-1.0)/0.45), len=Math.max(0.01,40*easeOutBack(r));
+    g3rays.setAttribute('opacity',clamp(r*4).toFixed(3));
+    g3rayEls.forEach(R=>{const cx=130,cy=150,r1=200,r2=200+len;
+      R.el.setAttribute('x1',(cx+r1*R.c).toFixed(1));R.el.setAttribute('y1',(cy+r1*R.s*0.82).toFixed(1));
+      R.el.setAttribute('x2',(cx+r2*R.c).toFixed(1));R.el.setAttribute('y2',(cy+r2*R.s*0.82).toFixed(1));});
+  },
+  g4(lt){
+    $('g4cable').setAttribute('stroke-dashoffset',(480*(1-easeOutCubic(clamp((lt-0.35)/0.8)))).toFixed(1));
+    const b=easeOutBack(clamp((lt-1.25)/0.45));
+    $('g4bolt').setAttribute('transform',`translate(0 215) scale(${b.toFixed(4)})`);
+  }
+};
+
+function renderScenes(t){
+  scenes.forEach(sc=>{
+    const vis=!(t<sc.a-0.0001||t>=sc.b);
+    sc.el.style.visibility=vis?'visible':'hidden';
+    if(sc.gel)sc.gel.style.visibility=vis?'visible':'hidden';
+    if(!vis)return;
+    let so=1,sy=0;
+    if(sc.b<900){const e=easeInCubic(clamp((t-(sc.b-0.32))/0.32));so=1-e;sy=-34*e;}
+    sc.el.style.opacity=so;
+    sc.el.style.transform=`translateY(${sy.toFixed(2)}px)`;
+    const lt=t-sc.a;
+    if(sc.gel){
+      // la grafica entra insieme al testo (tranne la scena 1, già visibile dal primo fotogramma)
+      let gi=sc.id==='s1'?1:easeOutCubic(clamp(lt/0.45));
+      sc.gel.style.opacity=(so*gi).toFixed(3);
+      sc.gel.style.transform=`translateY(${(sy+(1-gi)*40).toFixed(2)}px)`;
+      GFX[sc.g](lt,t);
+    }
+    sc.items.forEach((it,k)=>{
+      if(sc.id==='s1'){it.style.opacity=1;it.style.transform='none';return;} // titolo leggibile dal fotogramma 0
+      const st=sc.a+0.12+(sc.id==='s5'?0.32:0.13)*k;
+      if(it.dataset.pop){
+        const e=easeOutCubic(clamp((t-st)/0.4));
+        it.style.opacity=e;
+        it.style.transform=`translateX(${((1-e)*-60).toFixed(2)}px)`;
+        const box=it.querySelector('.box');
+        const f=clamp((t-st-0.25)/0.15);
+        box.style.background=`rgba(255,197,49,${f.toFixed(3)})`;
+        box.style.transform=`scale(${(1+0.18*Math.sin(Math.PI*clamp((t-st-0.25)/0.35))).toFixed(4)})`;
+        it.querySelector('.tk').setAttribute('stroke-dashoffset',(70*(1-easeOutCubic(clamp((t-st-0.35)/0.3)))).toFixed(2));
+      }else{
+        const e=easeOutCubic(clamp((t-st)/0.5));
+        it.style.opacity=e;
+        it.style.transform=`translateY(${((1-e)*46).toFixed(2)}px)`;
+      }
+    });
+  });
+  const s6=S[5];
+  const band=$('band');
+  const eb=easeOutCubic(clamp((t-(s6.a+0.5))/0.55));
+  band.style.opacity=eb;band.style.transform=`translateY(${((1-eb)*70).toFixed(2)}px)`;
+  // logo visibile dal primo fotogramma, sparisce nella chiusura
+  $('logo').style.opacity=t>=s6.a?1-clamp((t-s6.a)/0.3):1;
+  // nella chiusura si accendono tutte le lampadine (già accese dai passi)
+}
+
+window.render=function(t){renderBulbs(t);renderScenes(t);};
+
+window.READY=false;
+Promise.all([document.fonts.load('700 100px PoppinsLocal'),document.fonts.load('500 100px PoppinsLocal')]).then(()=>document.fonts.ready).then(()=>{
+  const fit={};
+  scenes.forEach(sc=>{sc.el.style.visibility='visible';fit[sc.id]=fitScene(sc);sc.el.style.visibility='hidden';placeScene(sc);});
+  window.FIT=fit;
+  window.FONTS=[...document.fonts].map(f=>f.family+' '+f.weight+' '+f.status);
+  window.render(0);
+  window.READY=true;
+});
+</script>
+</body>
+</html>
