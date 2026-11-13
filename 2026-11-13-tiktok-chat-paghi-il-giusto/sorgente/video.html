@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>TikTok · Gli mando la bolletta · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;background:#0E2240}canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../../strumenti/base.js"></script>
+<script>
+// Durata 17.5 s. Stile: mini-storia in chat (conversazione di esempio, dal punto di vista del cliente).
+const END = 13.4;
+// side: 'c' = cliente (a destra), 'm' = io ti consiglio (a sinistra). typ = inizio dei puntini «sta scrivendo»
+const M = [
+  {side:'c', img:true, t:0.0},
+  {side:'c', text:'È normale questa bolletta?', t:1.1},
+  {side:'m', text:'L’ho letta tutta, voce per voce.', t:3.5, typ:2.2},
+  {side:'m', text:'Paghi già il giusto. Non cambiare niente.', t:6.2, typ:5.0},
+  {side:'c', text:'Davvero? Non mi proponi niente?', t:8.5},
+  {side:'m', text:'No. Se un giorno conviene, te lo dico io.', t:11.0, typ:9.8}
+];
+const FS = 50, LH = 64, PADX = 36, PADY = 28, MAXT = 600, GAP = 22;
+const TOP = 500, BOT = 1366, LEFT = 84, RIGHT = 940;
+const C_BG = '#27457A';
+
+function layout() {
+  let y = 0;
+  M.forEach((m, k) => {
+    if (m.img) { m.w = 300; m.h = 330; }
+    else { m.lines = wrap(m.text, FS, 500, MAXT); font(FS, 500); m.w = Math.max(...m.lines.map(l => ctx.measureText(l).width)) + PADX * 2; m.h = m.lines.length * LH + PADY * 2 - 8; }
+    const prev = M[k - 1];
+    m.label = m.side === 'm' && (!prev || prev.side !== 'm');
+    if (prev) y += prev.side === m.side ? GAP : GAP + 16;
+    if (m.label) y += 46;
+    m.y = y; y += m.h;
+  });
+}
+function bubble(x, y, w, h, side, p) {
+  ctx.fillStyle = side === 'c' ? C_BG : YEL;
+  const r = 36;
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, side === 'c' ? [r, r, 10, r] : [r, r, r, 10]); ctx.fill();
+}
+function bill(x, y) {
+  ctx.fillStyle = WH; rr(x + 22, y + 22, 256, 286, 16); ctx.fill();
+  ctx.fillStyle = NAVY; rr(x + 44, y + 46, 130, 22, 6); ctx.fill();
+  ctx.fillStyle = '#C9D2E0'; [0, 1, 2, 3].forEach(k => { rr(x + 44, y + 92 + k * 30, k % 2 ? 150 : 212, 12, 6); ctx.fill(); });
+  ctx.fillStyle = YEL; rr(x + 44, y + 222, 212, 62, 12); ctx.fill();
+  txt('€ ? ? ?', x + 150, y + 268, 40, 700, NAVY, 'center');
+}
+
+window.render = function (t) {
+  ctx.globalAlpha = 1; ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  const fin = eo((t - END) / 0.5);          // chiusura
+  const chatA = 1 - eo((t - END + 0.1) / 0.35);
+  if (t >= END) wire([0, 1, 2, 3, 4].map(k => eo((t - END - 0.15 - k * 0.08) / 0.2)), t, YEL, eo((t - END) / 0.3));
+
+  if (chatA > 0) {
+    ctx.save(); ctx.globalAlpha = chatA; ctx.translate(0, -60 * (1 - chatA));
+    // gancio, leggibile dal primo fotogramma
+    const z = Math.min(fit('Gli mando la bolletta.', 84, 700, 856), fit('Guarda cosa risponde.', 84, 700, 856));
+    txt('Gli mando la bolletta.', LEFT, 340, z, 700, WH);
+    txt('Guarda cosa risponde.', LEFT, 340 + z * 1.14, z, 700, YEL);
+    // messaggi visibili e «sta scrivendo»
+    let bottom = 0, typing = null;
+    M.forEach(m => { if (t >= m.t) bottom = Math.max(bottom, m.y + m.h); else if (m.typ !== undefined && t >= m.typ && !typing) typing = m; });
+    let typY = 0;
+    if (typing) { const prev = M[M.indexOf(typing) - 1]; typY = typing.y; bottom = Math.max(bottom, typY + 96); }
+    // scorrimento: l'ultimo messaggio resta dentro l'area
+    const area = BOT - TOP;
+    let target = 0, prevTarget = 0, since = 99;
+    // calcolo dello scorrimento con transizione morbida sull'ultimo evento
+    const events = [];
+    M.forEach(m => { events.push({t: m.t, b: m.y + m.h}); if (m.typ !== undefined) events.push({t: m.typ, b: m.y + 96}); });
+    events.sort((a, b) => a.t - b.t);
+    let run = 0;
+    events.forEach(e => { if (t >= e.t) { const nt = Math.max(run, e.b - area, 0); if (nt > run) { prevTarget = run; since = t - e.t; } run = nt; } });
+    target = lerp(prevTarget, run, eo(since / 0.35));
+    ctx.save(); ctx.beginPath(); ctx.rect(0, TOP - 8, W, area + 16); ctx.clip(); ctx.translate(0, TOP - target);
+    M.forEach(m => {
+      if (t < m.t) return;
+      const p = eo((t - m.t) / 0.3), x = m.side === 'c' ? RIGHT - m.w : LEFT;
+      ctx.save(); ctx.globalAlpha *= p;
+      const ox = m.side === 'c' ? RIGHT : LEFT, oy = m.y + m.h, sc = lerp(0.82, 1, ebk((t - m.t) / 0.32));
+      if (m.label) logo(LEFT + 6, m.y - 16, 30, SUB, 1);
+      ctx.translate(ox, oy); ctx.scale(sc, sc); ctx.translate(-ox, -oy);
+      bubble(x, m.y, m.w, m.h, m.side);
+      if (m.img) bill(x, m.y);
+      else m.lines.forEach((l, k) => txt(l, x + PADX, m.y + PADY + 42 + k * LH, FS, 500, m.side === 'c' ? WH : NAVY));
+      ctx.restore();
+    });
+    if (typing) {
+      const p = eo((t - typing.typ) / 0.2);
+      ctx.save(); ctx.globalAlpha *= p;
+      if (typing.label) logo(LEFT + 6, typY - 16, 30, SUB, 1);
+      bubble(LEFT, typY, 150, 88, 'm');
+      [0, 1, 2].forEach(k => { const a = 0.35 + 0.65 * Math.max(0, Math.sin(2 * Math.PI * (t * 1.4 - k * 0.18))); ctx.globalAlpha = p * chatA * a; ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(LEFT + 45 + k * 30, typY + 44 - 6 * Math.max(0, Math.sin(2 * Math.PI * (t * 1.4 - k * 0.18))), 9, 0, 7); ctx.fill(); });
+      ctx.restore();
+    }
+    ctx.restore();
+    txt('Conversazione di esempio', LEFT, 1420, 30, 500, '#7C8AA5');
+    ctx.restore();
+  }
+
+  // chiusura
+  if (fin > 0) {
+    const lt = t - END;
+    const s = 5.2 * ebk((lt - 0.05) / 0.45);
+    if (s > 0.1) { rays(240, 660, 28 * s + 24, 32 * ebk((lt - 0.4) / 0.4), 7, 200, 340, 12, YEL, clamp((lt - 0.4) / 0.15)); bulb(240, 660, s, YEL, WH);
+      ctx.save(); ctx.translate(240 - 50 * s, 660 - 42 * s); ctx.scale(s, s); ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(50, 30, 5.5, 0, 7); ctx.fill(); rr(45.5, 39, 9, 22, 4.5); ctx.fill(); ctx.restore(); }
+    logo(430, 666, 66, WH, eo((lt - 0.3) / 0.4));
+    txt('Se paghi già il giusto, te lo dico.', 430, 738, fit('Se paghi già il giusto, te lo dico.', 40, 500, 510), 500, SUB, 'left', eo((lt - 0.45) / 0.4));
+    const a1 = eo((lt - 0.35) / 0.4), a2 = eo((lt - 0.5) / 0.4);
+    txt('Mandami', 84, 1026 + (1 - a1) * 46, 112, 700, WH, 'left', a1);
+    txt('la tua.', 84, 1142 + (1 - a2) * 46, 112, 700, YEL, 'left', a2);
+    band(eo((lt - 0.8) / 0.55), 1172);
+  }
+  if (t < END) logo(RIGHT - tw('io ti consiglio', 36, 700), 1420, 36, WH, chatA);
+};
+ready(layout);
+</script>
+</body>
+</html>
