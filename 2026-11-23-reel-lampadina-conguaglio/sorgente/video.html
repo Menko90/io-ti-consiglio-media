@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Reel · Quando arriva il conguaglio · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;background:#0E2240}canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../../strumenti/base.js"></script>
+<script>
+// Durata 17.5 s. Stile: ironico, con la lampadina del logo come personaggio. Tema: il conguaglio dopo le letture stimate.
+const P = [{a:0},{a:2.6},{a:5.3},{a:8.0},{a:10.8},{a:13.4}];
+const TXT = [null,
+  {lab:'PER MESI', main:['Bollette leggere.']},
+  {lab:'POI, UN GIORNO…', main:['Arriva il conguaglio.']},
+  {lab:'IL MOTIVO?', main:['Le letture', 'erano stimate.']},
+  {lab:'LA PROSSIMA VOLTA', main:['Guarda se è', 'stimata o reale.']},
+  {lab:'E SE HAI DUBBI…', main:['Mandamela.']}];
+const RED = '#E5484D';
+const phase = (t) => { for (let i = P.length - 1; i >= 0; i--) if (t >= P[i].a) return i; return 0; };
+const end = (i) => i < P.length - 1 ? P[i + 1].a : 999;
+function mascot(cx, cy, s, o) {
+  bulb(cx, cy, s, o.fill, o.cap, o.stroke);
+  ctx.save(); ctx.translate(cx - 50 * s, cy - 42 * s); ctx.scale(s, s);
+  const ink = o.ink || NAVY;
+  [-10.5, 10.5].forEach((dx, i) => {
+    const ex = 50 + dx, ey = 38, r = 6.6;
+    const ry = Math.max(0.5, r * o.open);
+    ctx.fillStyle = WH; ctx.beginPath(); ctx.ellipse(ex, ey, r, ry, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = ink; ctx.lineWidth = 0.9; ctx.stroke();
+    if (o.open > 0.25) { ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(ex + o.px, ey + Math.max(-ry + 2.6, Math.min(ry - 2.6, o.py)), 2.9 * (o.pup || 1), 0, 7); ctx.fill(); }
+    if (o.brows) { const b = o.brows[i]; ctx.strokeStyle = ink; ctx.lineWidth = 1.7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(ex - 6.5, ey - ry - 3.2 + b.dy + b.tilt); ctx.lineTo(ex + 6.5, ey - ry - 3.2 + b.dy - b.tilt); ctx.stroke(); }
+  });
+  ctx.strokeStyle = ink; ctx.fillStyle = ink; ctx.lineWidth = 1.9; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const mx = 50, my = 54;
+  ctx.beginPath();
+  if (o.mouth === 'flat') { ctx.moveTo(mx - 6.5, my); ctx.lineTo(mx + 6.5, my); ctx.stroke(); }
+  else if (o.mouth === 'o') { ctx.ellipse(mx, my + 1, 4.4, 6.2, 0, 0, 7); ctx.fill(); }
+  else if (o.mouth === 'smile') { ctx.moveTo(mx - 9.5, my - 2.5); ctx.quadraticCurveTo(mx, my + 9, mx + 9.5, my - 2.5); ctx.stroke(); }
+  else if (o.mouth === 'smirk') { ctx.moveTo(mx - 6, my + 1.5); ctx.quadraticCurveTo(mx + 1, my + 2.5, mx + 7, my - 2); ctx.stroke(); }
+  else if (o.mouth === 'wavy') { ctx.moveTo(mx - 8, my); for (let k = 1; k <= 16; k++) ctx.lineTo(mx - 8 + k, my + 1.5 * Math.sin(k * 1.2)); ctx.stroke(); }
+  ctx.restore();
+}
+
+function envelope(x, y, sc, rot, openP, alpha) {
+  if (alpha <= 0) return;
+  const w = 250, h = 164;
+  ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
+  // retro
+  ctx.fillStyle = '#D9D4C5'; rr(-w / 2, -h / 2, w, h, 16); ctx.fill();
+  // foglio che esce
+  if (openP > 0) {
+    const pw = w * 0.8, ph = h * 1.5, rise = openP * h * 1.15;
+    ctx.save(); ctx.beginPath(); ctx.rect(-w, -h * 3, w * 2, h * 3 + h / 2 - 8); ctx.clip();
+    ctx.fillStyle = WH; rr(-pw / 2, -h / 2 + 14 - rise, pw, ph, 10); ctx.fill();
+    ctx.fillStyle = '#C9D2E0';
+    for (let k = 0; k < 3; k++) { rr(-pw / 2 + 20, -h / 2 + 36 - rise + k * 24, pw - 40 - (k === 2 ? 50 : 0), 9, 4.5); ctx.fill(); }
+    ctx.save(); font(24, 700); ctx.letterSpacing = '0px'; ctx.fillStyle = '#E5484D'; ctx.textAlign = 'center'; ctx.fillText('CONGUAGLIO', 0, -h / 2 + 150 - rise); ctx.restore();
+    ctx.restore();
+  }
+  // fronte
+  ctx.fillStyle = '#F4F1E8';
+  ctx.beginPath(); ctx.moveTo(-w / 2, -h / 2 + 16); ctx.lineTo(0, 22); ctx.lineTo(w / 2, -h / 2 + 16); ctx.lineTo(w / 2, h / 2 - 16); ctx.quadraticCurveTo(w / 2, h / 2, w / 2 - 16, h / 2); ctx.lineTo(-w / 2 + 16, h / 2); ctx.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - 16); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#B9B29E'; ctx.lineWidth = 5; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-w / 2 + 4, -h / 2 + 18); ctx.lineTo(0, 22); ctx.lineTo(w / 2 - 4, -h / 2 + 18); ctx.stroke();
+  // lembo chiuso
+  if (openP <= 0) { ctx.fillStyle = '#E9E5D8'; ctx.beginPath(); ctx.moveTo(-w / 2 + 6, -h / 2 + 6); ctx.lineTo(0, 24); ctx.lineTo(w / 2 - 6, -h / 2 + 6); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  ctx.restore();
+}
+
+
+function stamp(cx, cy, label, p, color) {
+  if (p <= 0) return;
+  const sc = lerp(1.8, 1, eo(p)), a = clamp(p * 2.5);
+  font(70, 700); const w = ctx.measureText(label).width + 80;
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(cx, cy); ctx.rotate(-0.14); ctx.scale(sc, sc);
+  ctx.fillStyle = 'rgba(14,34,64,0.9)'; rr(-w / 2, -62, w, 124, 18); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 10; rr(-w / 2, -62, w, 124, 18); ctx.stroke();
+  txt(label, 0, 25, 70, 700, color, 'center');
+  ctx.restore();
+}
+function chip(x, y, label, kind, p) {
+  if (p <= 0) return;
+  ctx.save(); ctx.globalAlpha = clamp(p * 2); ctx.translate((1 - eo(p)) * 80, 0);
+  const w = 330, h = 104;
+  if (kind === 'ok') { ctx.fillStyle = YEL; rr(x, y, w, h, 55); ctx.fill(); }
+  else { ctx.strokeStyle = YEL; ctx.lineWidth = 6; rr(x + 3, y + 3, w - 6, h - 6, 52); ctx.stroke(); }
+  const c = kind === 'ok' ? NAVY : YEL;
+  txt(kind === 'ok' ? '✓' : '?', x + 58, y + 72, 54, 700, c, 'center');
+  txt(label, x + 104, y + 68, fit(label, 44, 700, 200), 700, c);
+  ctx.restore();
+}
+function coin(x, y, s, a) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = YEL; ctx.beginPath(); ctx.arc(x, y, 34 * s, 0, 7); ctx.fill(); txt('€', x, y + 20 * s, 54 * s, 700, NAVY, 'center'); ctx.restore(); }
+
+window.render = function (t) {
+  const i = phase(t), lt = t - P[i].a, b = end(i);
+  ctx.globalAlpha = 1; ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  // filo: lampadine accese finché va tutto bene, si spengono col conguaglio, si riaccendono alla fine
+  const on = [0, 1, 2, 3, 4].map(k => {
+    if (i <= 1) return 1;
+    if (i === 2) return 1 - eo((lt - 0.25 - k * 0.07) / 0.15);
+    if (i === 3) return 0;
+    if (i === 4) return k < 2 ? eo((lt - 0.6 - k * 0.15) / 0.2) : 0;
+    return eo((lt - 0.1 - k * 0.08) / 0.2);
+  });
+  wire(on, t);
+
+  const p5 = i === 5 ? eo(lt / 0.6) : 0;
+  let cx = lerp(380, 250, p5), cy = lerp(650, 670, p5) + 6 * Math.sin(2 * Math.PI * t / 2.2), s = lerp(7.0, 5.6, p5);
+  s *= 1 + 0.05 * Math.sin(Math.PI * clamp(lt / 0.35)) * (i > 0 ? 1 : 0);
+  const blink = (x) => 1 - Math.sin(Math.PI * clamp(x / 0.16));
+  const o = {fill: YEL, cap: WH, ink: NAVY, open: 1, px: 1.8, py: 0.8, mouth: 'smile'};
+  if (i === 0) { o.open = blink(t - 1.4); o.px = 2; o.py = -0.5; }
+  if (i === 1) { o.open = Math.min(blink(lt - 0.9), 0.55 + 0.45 * clamp(1 - (lt - 1.2) / 0.2) + 0.45 * clamp((lt - 2.2) / 0.2)); o.mouth = 'smile'; o.px = 0; o.py = -1.5; o.brows = [{dy: -1.5, tilt: 0}, {dy: -1.5, tilt: 0}]; }
+  if (i === 2) { const g = eo((lt - 0.55) / 0.2); o.open = lerp(1, 1.5, g); o.pup = lerp(1, 0.6, g); o.px = 2.2; o.py = 0.4; o.mouth = g > 0.3 ? 'o' : 'smile'; cy -= 40 * Math.sin(Math.PI * clamp((lt - 0.55) / 0.4)); }
+  if (i === 3) { o.open = 0.8; o.px = -1.6; o.py = 1.4; o.mouth = 'wavy'; o.brows = [{dy: 0.8, tilt: -1.4}, {dy: 0.8, tilt: 1.4}]; }
+  if (i === 4) { o.px = 2.4; o.py = -0.6; o.mouth = 'smirk'; o.brows = [{dy: 0.6, tilt: 0}, {dy: -3.4, tilt: -1.6}]; o.open = blink(lt - 1.6); }
+  if (i === 5) { o.px = 0; o.py = -1; o.mouth = 'smile'; o.open = blink(lt - 2.2); }
+  if (i === 5 || i === 0 || i === 1) rays(cx, cy, 28 * s + 26, i === 5 ? 34 * ebk((lt - 0.45) / 0.45) : 22, 5, 215, 325, 12, YEL, i === 5 ? clamp((lt - 0.45) / 0.15) : (i === 1 ? 1 - eo((lt - 2.3) / 0.25) : 1));
+  mascot(cx, cy, s, o);
+  if (i === 3) { const d = clamp((lt - 0.4) / 1.6); const a = Math.sin(Math.PI * d); if (a > 0) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = '#8FD3FF'; const dxp = cx + 140, dyp = cy - 180 + d * 90; ctx.beginPath(); ctx.moveTo(dxp, dyp - 34); ctx.bezierCurveTo(dxp + 26, dyp, dxp + 22, dyp + 26, dxp, dyp + 26); ctx.bezierCurveTo(dxp - 22, dyp + 26, dxp - 26, dyp, dxp, dyp - 34); ctx.fill(); ctx.restore(); } }
+
+  // scena 1: monetine che salgono leggere
+  if (i === 1) for (let k = 0; k < 3; k++) { const q = (lt * 0.5 + k / 3) % 1; coin(720 + k * 100, 980 - q * 360, 1.1, Math.sin(Math.PI * q) * (1 - eo((lt - 2.3) / 0.25))); }
+  // busta del conguaglio: cade dall'alto, trema, si apre
+  if (i >= 2 && i <= 3) {
+    let ex = 790, ey = 820, esc = 1.25, erot = -0.06, eop = 0, ea = 1;
+    if (i === 2) { const q = ebk((lt - 0.05) / 0.5); ey = lerp(-200, 820, q); erot += 0.08 * Math.sin(2 * Math.PI * 7 * lt) * clamp((lt - 0.6) / 0.2) * (1 - clamp((lt - 1.6) / 0.3)); eop = ebk((lt - 1.7) / 0.45); }
+    if (i === 3) { eop = 1; ea = 1 - eo((b - t - 0.05) < 0.25 ? (0.25 - (b - t)) / 0.25 : 0); }
+    envelope(ex, ey, esc, erot, eop, ea);
+    if (i === 3) stamp(790, 930, 'STIMATA', (lt - 0.35) / 0.3, RED);
+  }
+  // scena 4: reale o stimata
+  if (i === 4) { chip(610, 640, 'REALE', 'ok', (lt - 0.2) / 0.4); chip(610, 784, 'STIMATA', 'no', (lt - 0.45) / 0.4); }
+
+  // testi
+  const out = b < 900 ? 1 - ei((t - (b - 0.25)) / 0.25) : 1;
+  if (i === 0) {
+    const z = Math.min(fit('Quando arriva', 112, 700, 856), fit('il conguaglio', 112, 700, 856));
+    txt('Quando arriva', 84, 1220, z, 700, WH, 'left', out);
+    txt('il conguaglio', 84, 1220 + z * 1.12, z, 700, YEL, 'left', out);
+  } else if (i < 5) {
+    const T = TXT[i];
+    const a1 = eo(lt / 0.3) * out, a2 = eo((lt - 0.1) / 0.4) * out;
+    txt(T.lab, 84, 1110, 46, 700, YEL, 'left', a1);
+    const z = Math.min(...T.main.map(m => fit(m, 100, 700, 856)));
+    T.main.forEach((m, k) => txt(m, 84, 1222 + k * z * 1.1 + (1 - eo((lt - 0.1) / 0.4)) * 46, z, 700, WH, 'left', a2));
+  } else {
+    const T = TXT[5];
+    logo(440, 676, 66, WH, eo((lt - 0.35) / 0.4));
+    txt('La controllo io, gratis.', 440, 750, 44, 500, SUB, 'left', eo((lt - 0.5) / 0.4));
+    txt(T.lab, 84, 1016, 46, 700, YEL, 'left', eo(lt / 0.3));
+    txt(T.main[0], 84, 1124 + (1 - eo((lt - 0.1) / 0.4)) * 46, fit(T.main[0], 108, 700, 856), 700, WH, 'left', eo((lt - 0.1) / 0.4));
+    band(eo((lt - 0.7) / 0.55), 1164);
+  }
+  if (i < 5) logo(84, 1440, 40, WH, 1);
+};
+ready();
+</script>
+</body>
+</html>
