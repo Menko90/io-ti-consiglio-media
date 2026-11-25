@@ -134,6 +134,7 @@ function person(x, y, h, f, t, legs, heads, holdBroken) {
   if (f.prop === 'tablet') { const tw2 = h * 0.34, th = h * 0.22, tx = x - tw2 / 2, ty = (hL[1] + hR[1]) / 2 - th * 0.75; ctx.fillStyle = '#26334D'; rr(tx - 8, ty - 8, tw2 + 16, th + 16, 12); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke(); screenContent(tx, ty, tw2, th, t, holdBroken, 'tablet'); }
   dot(hL[0], hL[1], h * 0.036, SKIN); dot(hR[0], hR[1], h * 0.036, SKIN);
   if (heads) heads[f.kind] = {x: head.x, y: head.y - head.r};
+  if (heads) heads[f.kind + '_mani'] = {l: hL, r: hR, spalle: sy};
 }
 
 // Lumo, la lampadina con la faccia

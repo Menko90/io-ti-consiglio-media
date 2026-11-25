@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Cartone · Stessa casa, bolletta diversa · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;background:#0E2240}canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../../strumenti/base.js"></script>
+<script src="../../strumenti/personaggi.js"></script>
+<script>
+// Cartone animato, 22 s. Al bar Salvo e Nino confrontano la bolletta della luce: stesso palazzo, bollette diverse.
+const DUR = 22.0;
+const S = [0, 4.5, 9.0, 13.0, 17.6];
+const PX = 50, PY = 410, PW = 980, PH = 990, FLOOR = 930;
+const sx = (x) => PX + x, sy = (y) => PY + y;
+const scene = (t) => { for (let i = S.length - 1; i >= 0; i--) if (t >= S[i]) return i; return 0; };
+const COUNTER_TOP = FLOOR - 330, MACHINE_X = 650;
+
+const BUBBLES = [
+  {t: 0.9, end: 4.5, who: 'salvo', text: 'Nino, quanto ti è arrivata la luce?', cx: 300, top: 520, maxW: 420},
+  {t: 2.6, end: 4.5, who: 'nino', text: 'Ce l’ho qua.', cx: 820, top: 610},
+  {t: 5.6, end: 9.0, who: 'salvo', text: 'Ma abitiamo nello stesso palazzo!', cx: 290, top: 470, shout: true, maxW: 360},
+  {t: 7.0, end: 9.0, who: 'nino', text: 'Eh. Stessi metri, stessa lavatrice.', cx: 800, top: 590, maxW: 300},
+  {t: 9.4, end: 13.0, who: 'salvo', text: 'E tu che hai fatto?!', cx: 290, top: 520, shout: true, maxW: 340},
+  {t: 11.0, end: 13.0, who: 'nino', text: 'Ho guardato una riga.', cx: 810, top: 600, maxW: 300},
+  {t: 13.9, end: 17.6, who: 'lumo', text: 'C’è una riga in bolletta che quasi nessuno guarda.', cx: 610, top: 440, maxW: 620},
+  {t: 15.7, end: 17.6, who: 'salvo', text: 'QUALE?!', cx: 250, top: 640, shout: true}
+];
+const talking = (who, t) => BUBBLES.some(b => b.who === who && t >= b.t && t < b.t + 1.3);
+const heads = {};
+
+function bar(t, i) {
+  ctx.fillStyle = '#EEF2F8'; ctx.fillRect(PX, PY, PW, PH);
+  // finestra con il mattino
+  ctx.fillStyle = '#BFE0FF'; rr(sx(60), sy(120), 230, 260, 14); ctx.fill();
+  ctx.fillStyle = YEL; ctx.beginPath(); ctx.arc(sx(220), sy(190), 30, 0, 7); ctx.fill();
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 6; rr(sx(60), sy(120), 230, 260, 14); ctx.stroke();
+  ctx.strokeStyle = '#EEF2F8'; ctx.beginPath(); ctx.moveTo(sx(175), sy(124)); ctx.lineTo(sx(175), sy(376)); ctx.stroke();
+  // insegna
+  ctx.fillStyle = YEL; rr(sx(560), sy(36), 330, 82, 12); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke();
+  txt('Bar da Nino', sx(725), sy(93), 46, 700, NAVY, 'center');
+  // mensola con le tazzine
+  ctx.fillStyle = '#9AAAC4'; rr(sx(600), sy(300), 300, 16, 5); ctx.fill(); ctx.stroke();
+  for (let k = 0; k < 4; k++) { const cx = sx(640 + k * 70); ctx.fillStyle = WH; rr(cx - 20, sy(262), 40, 38, 8); ctx.fill(); ctx.stroke(); }
+  // pavimento
+  ctx.fillStyle = '#C9D3E3'; ctx.fillRect(PX, sy(FLOOR), PW, PH - FLOOR);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(PX, sy(FLOOR)); ctx.lineTo(PX + PW, sy(FLOOR)); ctx.stroke();
+}
+
+function counter(t, i) {
+  const x0 = sx(420), x1 = sx(990), top = sy(COUNTER_TOP);
+  ctx.fillStyle = '#26334D'; ctx.fillRect(x0, top + 26, x1 - x0, sy(FLOOR) - top - 26);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.strokeRect(x0, top + 26, x1 - x0, sy(FLOOR) - top - 26);
+  ctx.fillStyle = YEL; ctx.fillRect(x0, top + 70, x1 - x0, 16);
+  ctx.fillStyle = '#B7C4D9'; rr(x0 - 20, top, x1 - x0 + 40, 30, 8); ctx.fill(); ctx.stroke();
+  // macchina del caffè
+  const mx = sx(MACHINE_X), shake = i === 3 && t < S[3] + 0.5 ? Math.sin(t * 70) * 5 : 0;
+  ctx.fillStyle = '#9AAAC4'; rr(mx - 80 + shake, top - 160, 160, 160, 16); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#26334D'; rr(mx - 50 + shake, top - 120, 100, 70, 10); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#E5484D'; ctx.beginPath(); ctx.arc(mx + 52 + shake, top - 136, 8, 0, 7); ctx.fill();
+  // tazzina di Salvo
+  ctx.fillStyle = WH; rr(sx(455) - 22, top - 34, 44, 34, 8); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(sx(455) + 26, top - 18, 9, -1.2, 1.2); ctx.stroke();
+  if (i < 3) { ctx.strokeStyle = '#9AAAC4'; ctx.lineWidth = 4; for (let k = 0; k < 2; k++) { ctx.beginPath(); const o = (t * 0.8 + k * 0.5) % 1; ctx.globalAlpha = 1 - o; ctx.moveTo(sx(448 + k * 14), top - 44 - o * 40); ctx.quadraticCurveTo(sx(440 + k * 14), top - 60 - o * 40, sx(450 + k * 14), top - 76 - o * 40); ctx.stroke(); } ctx.globalAlpha = 1; }
+  return {x: mx, top: top - 160};
+}
+
+// la bolletta corta di Nino
+function billSmall(x, y, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a);
+  ctx.fillStyle = WH; rr(-50, -130, 100, 130, 8); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke();
+  ctx.fillStyle = NAVY; ctx.fillRect(-32, -110, 50, 10);
+  ctx.fillStyle = '#C9D3E3'; for (let k = 0; k < 3; k++) ctx.fillRect(-32, -88 + k * 18, 64 - (k === 2 ? 22 : 0), 7);
+  ctx.fillStyle = '#2FBF71'; rr(-32, -36, 64, 18, 5); ctx.fill();
+  ctx.restore();
+}
+// la bolletta lunghissima di Salvo che si srotola fino a terra
+function billLong(hx, hy, p) {
+  const w = 110, floorY = sy(FLOOR) - 8;
+  const down = Math.min(1, p * 1.4) * (floorY - hy + 30), along = Math.max(0, p * 1.4 - 1) / 0.4 * 230;
+  ctx.fillStyle = WH; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.rect(hx - w / 2, hy - 30, w, down); ctx.fill(); ctx.stroke();
+  if (along > 0) { ctx.beginPath(); ctx.rect(hx - w / 2, floorY - 26, w + along, 26); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = '#C9D3E3';
+  for (let yy = hy - 10; yy < hy - 30 + down - 14; yy += 22) ctx.fillRect(hx - 38, yy, (yy % 44 < 22) ? 76 : 54, 7);
+  ctx.fillStyle = '#E5484D'; if (down > 120) rr(hx - 38, hy - 30 + down - 40, 76, 20, 5), ctx.fill();
+}
+
+function bubble(b, t) {
+  if (t < b.t || t >= b.end) return;
+  const p = eo((t - b.t) / 0.22), out = 1 - eo((t - (b.end - 0.18)) / 0.18);
+  const size = 44, lh = size * 1.22;
+  const lines = wrap(b.text, size, 700, b.maxW || 520);
+  font(size, 700);
+  const w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 64, h = lines.length * lh + 40;
+  const x = Math.max(84, Math.min(940 - w, b.cx - w / 2)), y = b.top;
+  const hd = heads[b.who] || {x: b.cx, y: b.top + h + 120};
+  const tipX = lerp(x + w / 2, hd.x, 0.75), tipY = Math.max(y + h + 30, hd.y - 40);
+  const baseX = Math.max(x + 50, Math.min(x + w - 50, lerp(x + w / 2, hd.x, 0.5)));
+  ctx.save(); ctx.globalAlpha = p * out;
+  const sc = lerp(0.7, 1, ebk((t - b.t) / 0.28));
+  ctx.translate(x + w / 2, y + h / 2); ctx.scale(sc, sc); ctx.translate(-(x + w / 2), -(y + h / 2));
+  ctx.lineJoin = 'round'; ctx.lineWidth = 6; ctx.strokeStyle = NAVY; ctx.fillStyle = b.shout ? YEL : WH;
+  ctx.beginPath(); ctx.moveTo(baseX - 24, y + h - 4); ctx.lineTo(tipX, tipY); ctx.lineTo(baseX + 24, y + h - 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+  if (b.shout) {
+    ctx.beginPath(); const n = 22;
+    for (let k = 0; k <= n; k++) { const a = k / n * Math.PI * 2, r = (k % 2 ? 1.0 : 1.09); const px = x + w / 2 + Math.cos(a) * (w / 2 + 16) * r, py = y + h / 2 + Math.sin(a) * (h / 2 + 16) * r; k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else { rr(x, y, w, h, 36); ctx.fill(); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(baseX - 18, y + h - 6); ctx.lineTo(baseX + 18, y + h - 6); ctx.lineTo(lerp(baseX, tipX, 0.25), lerp(y + h, tipY, 0.25)); ctx.closePath(); ctx.fill();
+  lines.forEach((l, k) => txt(l, x + w / 2, y + 20 + size * 0.98 + k * lh, size, 700, NAVY, 'center'));
+  ctx.restore();
+}
+
+function caption(text, t0, t) {
+  const p = eo((t - t0) / 0.3); if (p <= 0) return;
+  font(38, 700); const w = ctx.measureText(text).width + 44;
+  ctx.save(); ctx.globalAlpha = p; ctx.fillStyle = YEL; ctx.fillRect(PX + 18, PY + 18, w, 64);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.strokeRect(PX + 18, PY + 18, w, 64);
+  txt(text, PX + 40, PY + 64, 38, 700, NAVY); ctx.restore();
+}
+
+function endCard(t) {
+  const lt = t - S[4];
+  ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  wire([0, 1, 2, 3, 4].map(k => eo((lt - 0.2 - k * 0.1) / 0.2)), t);
+  const s = 5.2 * ebk((lt - 0.1) / 0.5);
+  if (s > 0.2) {
+    rays(540, 640, 28 * s + 26, 38 * ebk((lt - 0.5) / 0.4), 7, 200, 340, 13, YEL, clamp((lt - 0.5) / 0.2));
+    mascot(540, 640 + 8 * Math.sin(t * 2.6), s, {fill: YEL, cap: WH, ink: NAVY, open: lt > 2.6 && lt < 2.75 ? 0.1 : 1, px: 0, py: -1, mouth: lt > 0.6 && lt < 1.8 ? (Math.floor(t * 8) % 2 ? 'o' : 'smirk') : 'smirk', brows: [{dy: -1, tilt: 0}, {dy: -3.5, tilt: -1.6}]});
+  }
+  const a1 = eo((lt - 0.5) / 0.4), a2 = eo((lt - 0.65) / 0.4);
+  txt('E tu, quella riga,', 540, 990 + (1 - a1) * 40, 70, 700, WH, 'center', a1);
+  txt('l’hai mai guardata?', 540, 1072 + (1 - a2) * 40, fit('l’hai mai guardata?', 70, 700, 900), 700, YEL, 'center', a2);
+  const p = eo((lt - 1.1) / 0.5);
+  if (p > 0) {
+    ctx.save(); ctx.globalAlpha = p; ctx.translate(0, (1 - p) * 60);
+    ctx.fillStyle = YEL; ctx.fillRect(0, 1140, W, 300);
+    txt('Mandaci la foto della bolletta', 84, 1214, fit('Mandaci la foto della bolletta', 48, 700, 856), 700, NAVY);
+    txt('su WhatsApp, te la guardiamo gratis.', 84, 1274, fit('su WhatsApp, te la guardiamo gratis.', 48, 700, 856), 500, NAVY);
+    txt('+39 375 504 9079', 84, 1390, fit('+39 375 504 9079', 92, 700, 856), 700, NAVY);
+    ctx.restore();
+  }
+  logo(84, 1500, 40, WH, eo((lt - 0.4) / 0.4));
+}
+
+window.render = function (t) {
+  const i = scene(t);
+  for (const k in heads) delete heads[k];
+  ctx.globalAlpha = 1; ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  if (i === 4) { endCard(t); return; }
+  const z1 = fit('Stessa casa, stessa luce.', 64, 700, 900);
+  txt('Stessa casa, stessa luce.', 84, 318, z1, 700, WH);
+  txt('Bolletta diversa.', 84, 392, z1, 700, YEL);
+  const shakeCam = i === 1 ? 10 * Math.max(0, 1 - (t - S[1] - 1.1) / 0.35) * (t > S[1] + 1.1 ? Math.sin(t * 70) : 0) : 0;
+  ctx.save(); ctx.translate(shakeCam, 0);
+  ctx.beginPath(); ctx.rect(PX, PY, PW, PH); ctx.clip();
+  bar(t, i);
+  const blinkAt = (x) => Math.abs(((t + x) % 3.3) - 3.2) < 0.09;
+
+  // Nino dietro il banco
+  let N = {kind: 'nino', eyes: 'dot', mouth: talking('nino', t) ? 'talk' : 'smile', brows: 'none', look: [-0.3, 0], armL: [-0.1, 0.1], armR: [0.1, 0.1], prop: 'none'};
+  if (i >= 1 && i < 3) { N.armR = [0.06, -0.24]; N.eyes = 'happy'; }
+  if (i === 2) { N.armR = [0.06, -0.24]; N.armL = [-0.14, -0.08]; N.eyes = 'dot'; N.brows = 'up'; }
+  if (i === 3) { N.eyes = 'wide'; N.mouth = 'o'; N.look = [-0.5, -0.2]; N.brows = 'up'; N.armR = [0.1, 0.1]; }
+  if (blinkAt(0.9) && N.eyes === 'dot') N.eyes = 'closed';
+  person(sx(800), sy(FLOOR), 570, N, t, 'stand', heads);
+  const nm = heads.nino_mani;
+  if (i >= 1 && i < 3) billSmall(nm.r[0] + 10, nm.r[1] + 20, 0.12);
+  if (i === 2) { ctx.fillStyle = WH; rr(nm.l[0] - 22, nm.l[1] - 34, 44, 34, 8); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke(); }
+
+  const md = counter(t, i);
+
+  // Salvo davanti al banco
+  let Sa = {kind: 'salvo', eyes: 'dot', mouth: talking('salvo', t) ? 'talk' : 'smile', brows: 'up', look: [0.4, 0], armL: [-0.1, 0.12], armR: [0.22, -0.02], prop: 'none'};
+  let salvoX = 270;
+  if (i === 1) { Sa.armR = [0.1, -0.2]; Sa.eyes = t > S[1] + 1.1 ? 'wide' : 'dot'; Sa.mouth = talking('salvo', t) ? 'talk' : 'open'; Sa.brows = 'worried'; Sa.armL = [-0.26, -0.24]; Sa.look = [0.5, 0.2]; }
+  if (i === 2) { salvoX = 270 + 40 * eo((t - S[2]) / 0.4); Sa.armR = [0.1, -0.2]; Sa.eyes = 'wide'; Sa.brows = 'angry'; Sa.mouth = talking('salvo', t) ? 'talk' : 'grit'; Sa.armL = [-0.2, 0.1]; Sa.look = [0.6, 0]; }
+  if (i === 3) { salvoX = 310; Sa.armR = [0.1, -0.2]; Sa.eyes = 'wide'; Sa.brows = 'up'; Sa.mouth = talking('salvo', t) ? 'talk' : 'open'; Sa.armL = [-0.1, 0.12]; Sa.look = [0.6, -0.3]; }
+  if (blinkAt(1.8) && Sa.eyes === 'dot') Sa.eyes = 'closed';
+  const sShake = (i === 1 && t > S[1] + 1.1 && t < S[1] + 1.6) || (i === 2 && t > S[2] + 0.4 && t < S[2] + 0.9) ? 4 * Math.sin(t * 60) : 0;
+  person(sx(salvoX) + sShake, sy(FLOOR), 590, Sa, t, 'stand', heads);
+  const sm = heads.salvo_mani;
+  if (i >= 1) billLong(sm.r[0] + 8, sm.r[1] + 6, i === 1 ? eo((t - S[1] - 0.3) / 1.1) : 1);
+  // gocce di sudore
+  if (i === 2) { const hd = heads.salvo; [[-90, 30], [95, 10]].forEach(([dx, dy], k) => { const o = ((t * 1.4 + k * 0.5) % 1); ctx.globalAlpha = 1 - o; ctx.fillStyle = '#8FD3FF'; const x = hd.x + dx, y = hd.y + dy + o * 50; ctx.beginPath(); ctx.moveTo(x, y - 22); ctx.bezierCurveTo(x + 16, y, x + 14, y + 16, x, y + 16); ctx.bezierCurveTo(x - 14, y + 16, x - 16, y, x, y - 22); ctx.fill(); }); ctx.globalAlpha = 1; }
+
+  // Lumo salta fuori dalla macchina del caffè
+  if (i === 3) {
+    const lt = t - S[3];
+    if (lt < 0.7) { ctx.fillStyle = WH; for (let k = 0; k < 4; k++) { const o = clamp(lt / 0.7); ctx.globalAlpha = 1 - o; ctx.beginPath(); ctx.arc(md.x - 50 + k * 34, md.top - 20 - o * 90 - k * 8, 22 + o * 16, 0, 7); ctx.fill(); } ctx.globalAlpha = 1; }
+    if (lt > 0.35) {
+      const jump = clamp((lt - 0.35) / 0.55), s = 2.9;
+      const ly = md.top - 84 - 260 * Math.sin(Math.PI * Math.min(1, jump * 1.0)) * (1 - jump * 0.0) * (jump < 1 ? 1 : 0) + 0;
+      const glow = clamp((lt - 0.6) / 0.4);
+      if (glow > 0) { const g = ctx.createRadialGradient(md.x, ly, 20, md.x, ly, 420); g.addColorStop(0, 'rgba(255,197,49,' + (0.35 * glow) + ')'); g.addColorStop(1, 'rgba(255,197,49,0)'); ctx.fillStyle = g; ctx.fillRect(PX, PY, PW, PH); }
+      rays(md.x, ly, 28 * s + 20, 26 * ebk((lt - 0.8) / 0.4), 7, 200, 340, 10, YEL, glow);
+      mascot(md.x, ly + 6 * Math.sin(t * 3), s, {fill: YEL, cap: WH, ink: NAVY, open: (lt > 2.4 && lt < 2.52) ? 0.1 : 1, px: lt > 2.8 ? -1.8 : 0, py: 0, mouth: talking('lumo', t) ? (Math.floor(t * 8) % 2 ? 'o' : 'smirk') : 'smirk', brows: lt > 2.6 ? [{dy: -1, tilt: 0}, {dy: -3.5, tilt: -1.6}] : null});
+      heads.lumo = {x: md.x, y: ly - 84};
+    }
+  }
+  ctx.restore();
+  ctx.strokeStyle = YEL; ctx.lineWidth = 8; rr(PX, PY, PW, PH, 4); ctx.stroke();
+  if (i === 0) caption('Bar da Nino, ore 8:00', -1, t);
+  BUBBLES.forEach(b => bubble(b, t));
+  if (t > S[4] - 0.25) { ctx.fillStyle = NAVY; ctx.globalAlpha = eo((t - (S[4] - 0.25)) / 0.25); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+  logo(84, 1462, 36, WH);
+};
+ready();
+</script>
+</body>
+</html>
