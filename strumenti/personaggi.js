@@ -100,7 +100,7 @@ function hairFront(kind, cx, cy, r) {
 
 // person: x = piedi al centro, y = pavimento, h = altezza totale. f = espressione e posa.
 function person(x, y, h, f, t, legs, heads, holdBroken) {
-  const L = LOOK[f.kind], bob = Math.sin(t * 3.2 + x * 0.01) * h * 0.006;
+  const L = Object.assign({}, LOOK[f.kind], f.casa ? {shirt: '#9AAAC4'} : {}), bob = Math.sin(t * 3.2 + x * 0.01) * h * 0.006;
   const hipY = y - h * 0.42, shY = y - h * 0.74 + bob, w = h * L.wide;
   const runA = legs === 'run' ? Math.sin(t * 18) * h * 0.09 : 0;
   // gambe
@@ -111,7 +111,7 @@ function person(x, y, h, f, t, legs, heads, holdBroken) {
   ctx.fillStyle = L.shirt; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
   if (f.kind === 'salvo') { ctx.beginPath(); ctx.moveTo(x - w * 0.42, shY); ctx.lineTo(x + w * 0.42, shY); ctx.quadraticCurveTo(x + w * 0.62, hipY - h * 0.1, x + w * 0.45, hipY + h * 0.02); ctx.lineTo(x - w * 0.45, hipY + h * 0.02); ctx.quadraticCurveTo(x - w * 0.62, hipY - h * 0.1, x - w * 0.42, shY); ctx.fill(); ctx.stroke(); }
   else { rr(x - w / 2, shY, w, hipY - shY + h * 0.02, h * 0.06); ctx.fill(); ctx.stroke(); }
-  if (f.kind === 'nino') { ctx.fillStyle = '#F2F4F8'; rr(x - w * 0.36, shY + h * 0.06, w * 0.72, hipY - shY + h * 0.1, h * 0.03); ctx.fill(); ctx.stroke(); }
+  if (f.kind === 'nino' && !f.casa) { ctx.fillStyle = '#F2F4F8'; rr(x - w * 0.36, shY + h * 0.06, w * 0.72, hipY - shY + h * 0.1, h * 0.03); ctx.fill(); ctx.stroke(); }
   if (f.kind === 'tommy') { // cuffie al collo
     ctx.strokeStyle = '#26334D'; ctx.lineWidth = h * 0.025; ctx.beginPath(); ctx.arc(x, shY - h * 0.01, h * 0.09, Math.PI * 0.05, Math.PI * 0.95); ctx.stroke();
     dot(x - h * 0.09, shY + h * 0.01, h * 0.03, YEL); dot(x + h * 0.09, shY + h * 0.01, h * 0.03, YEL);

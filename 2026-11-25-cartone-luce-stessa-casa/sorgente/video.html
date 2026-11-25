@@ -23,53 +23,54 @@ const scene = (t) => { for (let i = S.length - 1; i >= 0; i--) if (t >= S[i]) re
 const COUNTER_TOP = FLOOR - 330, MACHINE_X = 650;
 
 const BUBBLES = [
-  {t: 0.9, end: 4.5, who: 'salvo', text: 'Nino, quanto ti è arrivata la luce?', cx: 300, top: 520, maxW: 420},
-  {t: 2.6, end: 4.5, who: 'nino', text: 'Ce l’ho qua.', cx: 820, top: 610},
+  {t: 0.9, end: 4.5, who: 'salvo', text: 'Nino, quanto ti è arrivata la luce?', cx: 300, top: 520, maxW: 400},
+  {t: 2.6, end: 4.5, who: 'nino', text: 'Ce l’ho qua.', cx: 840, top: 520},
   {t: 5.6, end: 9.0, who: 'salvo', text: 'Ma abitiamo nello stesso palazzo!', cx: 290, top: 470, shout: true, maxW: 360},
-  {t: 7.0, end: 9.0, who: 'nino', text: 'Eh. Stessi metri, stessa lavatrice.', cx: 800, top: 590, maxW: 300},
+  {t: 7.0, end: 9.0, who: 'nino', text: 'Eh. Stessi metri, stessa lavatrice.', cx: 820, top: 470, maxW: 300},
   {t: 9.4, end: 13.0, who: 'salvo', text: 'E tu che hai fatto?!', cx: 290, top: 520, shout: true, maxW: 340},
-  {t: 11.0, end: 13.0, who: 'nino', text: 'Ho guardato una riga.', cx: 810, top: 600, maxW: 300},
+  {t: 11.0, end: 13.0, who: 'nino', text: 'Ho guardato una riga.', cx: 820, top: 480, maxW: 300},
   {t: 13.9, end: 17.6, who: 'lumo', text: 'C’è una riga in bolletta che quasi nessuno guarda.', cx: 610, top: 440, maxW: 620},
-  {t: 15.7, end: 17.6, who: 'salvo', text: 'QUALE?!', cx: 250, top: 640, shout: true}
+  {t: 15.7, end: 17.6, who: 'salvo', text: 'QUALE?!', cx: 230, top: 650, shout: true}
 ];
 const talking = (who, t) => BUBBLES.some(b => b.who === who && t >= b.t && t < b.t + 1.3);
 const heads = {};
 
-function bar(t, i) {
+// mobile delle cassette della posta: 3 colonne x 3 righe
+const MB = {x: 380, y: 170, w: 100, h: 80};
+function androne(t, i) {
   ctx.fillStyle = '#EEF2F8'; ctx.fillRect(PX, PY, PW, PH);
-  // finestra con il mattino
-  ctx.fillStyle = '#BFE0FF'; rr(sx(60), sy(120), 230, 260, 14); ctx.fill();
-  ctx.fillStyle = YEL; ctx.beginPath(); ctx.arc(sx(220), sy(190), 30, 0, 7); ctx.fill();
-  ctx.strokeStyle = NAVY; ctx.lineWidth = 6; rr(sx(60), sy(120), 230, 260, 14); ctx.stroke();
-  ctx.strokeStyle = '#EEF2F8'; ctx.beginPath(); ctx.moveTo(sx(175), sy(124)); ctx.lineTo(sx(175), sy(376)); ctx.stroke();
-  // insegna
-  ctx.fillStyle = YEL; rr(sx(560), sy(36), 330, 82, 12); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke();
-  txt('Bar da Nino', sx(725), sy(93), 46, 700, NAVY, 'center');
-  // mensola con le tazzine
-  ctx.fillStyle = '#9AAAC4'; rr(sx(600), sy(300), 300, 16, 5); ctx.fill(); ctx.stroke();
-  for (let k = 0; k < 4; k++) { const cx = sx(640 + k * 70); ctx.fillStyle = WH; rr(cx - 20, sy(262), 40, 38, 8); ctx.fill(); ctx.stroke(); }
-  // pavimento
-  ctx.fillStyle = '#C9D3E3'; ctx.fillRect(PX, sy(FLOOR), PW, PH - FLOOR);
-  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(PX, sy(FLOOR)); ctx.lineTo(PX + PW, sy(FLOOR)); ctx.stroke();
+  ctx.fillStyle = '#E3E9F3'; ctx.fillRect(PX, sy(FLOOR - 160), PW, 160);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(PX, sy(FLOOR - 160)); ctx.lineTo(PX + PW, sy(FLOOR - 160)); ctx.stroke();
+  // portone a vetri a sinistra
+  ctx.fillStyle = '#9AAAC4'; rr(sx(30), sy(120), 230, FLOOR - 120, 10); ctx.fill(); ctx.lineWidth = 5; ctx.stroke();
+  ctx.fillStyle = '#BFE0FF'; rr(sx(55), sy(150), 80, 330, 8); ctx.fill(); ctx.stroke(); rr(sx(155), sy(150), 80, 330, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = YEL; ctx.beginPath(); ctx.arc(sx(142), sy(560), 9, 0, 7); ctx.fill(); ctx.stroke();
+  // scale a destra
+  ctx.fillStyle = '#C9D3E3'; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(sx(980), sy(FLOOR)); for (let k = 0; k < 7; k++) { ctx.lineTo(sx(980 - 0) , 0); } ctx.closePath();
+  ctx.beginPath(); ctx.moveTo(sx(990), sy(FLOOR));
+  for (let k = 0; k < 7; k++) { const x = sx(990 - k * 0) ; }
+  let x0 = 990, y0 = FLOOR; ctx.moveTo(sx(x0), sy(y0));
+  for (let k = 0; k < 7; k++) { ctx.lineTo(sx(x0 - 40), sy(y0)); x0 -= 40; ctx.lineTo(sx(x0), sy(y0 - 55)); y0 -= 55; }
+  ctx.lineTo(sx(990), sy(y0)); ctx.lineTo(sx(990), sy(FLOOR)); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // pianta
+  ctx.fillStyle = '#2FBF71'; [[-30, -60], [0, -90], [30, -60]].forEach(([dx, dy]) => { ctx.beginPath(); ctx.ellipse(sx(320) + dx, sy(FLOOR - 70) + dy, 26, 48, dx / 60, 0, 7); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = YEL; rr(sx(290), sy(FLOOR - 80), 60, 80, 8); ctx.fill(); ctx.stroke();
+  // cassette della posta
+  ctx.fillStyle = '#7C8AA5'; rr(sx(MB.x - 16), sy(MB.y - 16), MB.w * 3 + 32, MB.h * 3 + 32, 10); ctx.fill(); ctx.stroke();
+  const lt = t - S[3];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+    const x = sx(MB.x + c * MB.w), y = sy(MB.y + r * MB.h);
+    ctx.fillStyle = '#26334D'; ctx.fillRect(x + 6, y + 6, MB.w - 12, MB.h - 12);
+    let open = 0;
+    if (r === 1 && c === 1 && i === 3) open = clamp(lt / 0.25);
+    if (r === 2 && c === 2 && i === 0 && t > 0.4) open = 0.85;
+    const dw = (MB.w - 12) * (1 - open);
+    ctx.fillStyle = '#C9D3E3'; ctx.fillRect(x + 6, y + 6, dw, MB.h - 12); ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.strokeRect(x + 6, y + 6, MB.w - 12, MB.h - 12);
+    if (open < 0.5) { ctx.fillStyle = NAVY; ctx.fillRect(x + 20, y + 22, (MB.w - 40) * (1 - open), 7); ctx.fillStyle = YEL; ctx.fillRect(x + 20, y + 44, (MB.w - 40) * (1 - open) * 0.7, 12); }
+  }
 }
-
-function counter(t, i) {
-  const x0 = sx(420), x1 = sx(990), top = sy(COUNTER_TOP);
-  ctx.fillStyle = '#26334D'; ctx.fillRect(x0, top + 26, x1 - x0, sy(FLOOR) - top - 26);
-  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.strokeRect(x0, top + 26, x1 - x0, sy(FLOOR) - top - 26);
-  ctx.fillStyle = YEL; ctx.fillRect(x0, top + 70, x1 - x0, 16);
-  ctx.fillStyle = '#B7C4D9'; rr(x0 - 20, top, x1 - x0 + 40, 30, 8); ctx.fill(); ctx.stroke();
-  // macchina del caffè
-  const mx = sx(MACHINE_X), shake = i === 3 && t < S[3] + 0.5 ? Math.sin(t * 70) * 5 : 0;
-  ctx.fillStyle = '#9AAAC4'; rr(mx - 80 + shake, top - 160, 160, 160, 16); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#26334D'; rr(mx - 50 + shake, top - 120, 100, 70, 10); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#E5484D'; ctx.beginPath(); ctx.arc(mx + 52 + shake, top - 136, 8, 0, 7); ctx.fill();
-  // tazzina di Salvo
-  ctx.fillStyle = WH; rr(sx(455) - 22, top - 34, 44, 34, 8); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(sx(455) + 26, top - 18, 9, -1.2, 1.2); ctx.stroke();
-  if (i < 3) { ctx.strokeStyle = '#9AAAC4'; ctx.lineWidth = 4; for (let k = 0; k < 2; k++) { ctx.beginPath(); const o = (t * 0.8 + k * 0.5) % 1; ctx.globalAlpha = 1 - o; ctx.moveTo(sx(448 + k * 14), top - 44 - o * 40); ctx.quadraticCurveTo(sx(440 + k * 14), top - 60 - o * 40, sx(450 + k * 14), top - 76 - o * 40); ctx.stroke(); } ctx.globalAlpha = 1; }
-  return {x: mx, top: top - 160};
-}
+function counter(t, i) { return {x: sx(MB.x + MB.w * 1.5), top: sy(MB.y + MB.h * 1.5) + 104}; }
 
 // la bolletta corta di Nino
 function billSmall(x, y, a) {
@@ -161,19 +162,19 @@ window.render = function (t) {
   const shakeCam = i === 1 ? 10 * Math.max(0, 1 - (t - S[1] - 1.1) / 0.35) * (t > S[1] + 1.1 ? Math.sin(t * 70) : 0) : 0;
   ctx.save(); ctx.translate(shakeCam, 0);
   ctx.beginPath(); ctx.rect(PX, PY, PW, PH); ctx.clip();
-  bar(t, i);
+  androne(t, i);
   const blinkAt = (x) => Math.abs(((t + x) % 3.3) - 3.2) < 0.09;
 
   // Nino dietro il banco
-  let N = {kind: 'nino', eyes: 'dot', mouth: talking('nino', t) ? 'talk' : 'smile', brows: 'none', look: [-0.3, 0], armL: [-0.1, 0.1], armR: [0.1, 0.1], prop: 'none'};
+  let N = {kind: 'nino', casa: true, eyes: 'dot', mouth: talking('nino', t) ? 'talk' : 'smile', brows: 'none', look: [-0.3, 0], armL: [-0.2, -0.48], armR: [0.1, 0.1], prop: 'none'};
   if (i >= 1 && i < 3) { N.armR = [0.06, -0.24]; N.eyes = 'happy'; }
-  if (i === 2) { N.armR = [0.06, -0.24]; N.armL = [-0.14, -0.08]; N.eyes = 'dot'; N.brows = 'up'; }
+  if (i >= 1) N.armL = [-0.1, 0.1];
+  if (i === 2) { N.armR = [0.06, -0.24]; N.eyes = 'dot'; N.brows = 'up'; }
   if (i === 3) { N.eyes = 'wide'; N.mouth = 'o'; N.look = [-0.5, -0.2]; N.brows = 'up'; N.armR = [0.1, 0.1]; }
   if (blinkAt(0.9) && N.eyes === 'dot') N.eyes = 'closed';
   person(sx(800), sy(FLOOR), 570, N, t, 'stand', heads);
   const nm = heads.nino_mani;
   if (i >= 1 && i < 3) billSmall(nm.r[0] + 10, nm.r[1] + 20, 0.12);
-  if (i === 2) { ctx.fillStyle = WH; rr(nm.l[0] - 22, nm.l[1] - 34, 44, 34, 8); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke(); }
 
   const md = counter(t, i);
 
@@ -207,7 +208,7 @@ window.render = function (t) {
   }
   ctx.restore();
   ctx.strokeStyle = YEL; ctx.lineWidth = 8; rr(PX, PY, PW, PH, 4); ctx.stroke();
-  if (i === 0) caption('Bar da Nino, ore 8:00', -1, t);
+  if (i === 0) caption('Androne del palazzo, ore 8:00', -1, t);
   BUBBLES.forEach(b => bubble(b, t));
   if (t > S[4] - 0.25) { ctx.fillStyle = NAVY; ctx.globalAlpha = eo((t - (S[4] - 0.25)) / 0.25); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
   logo(84, 1462, 36, WH);
