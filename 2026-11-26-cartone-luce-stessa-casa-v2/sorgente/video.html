@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Cartone v2 · Stessa casa, bolletta diversa · io ti consiglio</title>
+<style>
+@font-face{font-family:'PoppinsLocal';font-weight:500;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf') format('truetype');}
+@font-face{font-family:'PoppinsLocal';font-weight:700;src:url('file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf') format('truetype');}
+html,body{margin:0;background:#0E2240}canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../../strumenti/base.js"></script>
+<script src="../../strumenti/personaggi2.js"></script>
+<script>
+// Cartone animato v2, 23 s. Androne del palazzo: Salvo e Nino confrontano la bolletta della luce.
+const S = [0, 4.6, 9.2, 13.2, 18.2];
+const PX = 50, PY = 410, PW = 980, PH = 990, CX = 540, CY = 905;
+const FLOOR = 1340, WALL = 1262;
+const MB = {x: 430, y: 590, w: 100, h: 80};
+const LUMO_BOX = {r: 1, c: 1};
+const scene = (t) => { for (let i = S.length - 1; i >= 0; i--) if (t >= S[i]) return i; return 0; };
+
+const CAM = [
+  {t: 0, z: 1, x: CX, y: CY},
+  {t: 5.92, z: 1.55, x: 300, y: 862, d: 0.2},
+  {t: 7.4, z: 1.12, x: 560, y: 950, d: 0.55},
+  {t: 9.2, z: 1.2, x: 560, y: 960, d: 0.45},
+  {t: 13.2, z: 1, x: CX, y: CY, d: 0.35},
+  {t: 14.35, z: 1.3, x: 580, y: 822, d: 0.5},
+  {t: 16.6, z: 1.05, x: 540, y: 920, d: 0.4}
+];
+let cam = CAM[0];
+const toScreen = (p) => ({x: (p.x - cam.x) * cam.z + CX, y: (p.y - cam.y) * cam.z + CY});
+
+const SALVO = [
+  {t: 0, x: 170, armL: [-0.05, 0.2], armR: [0.05, 0.2], lean: 0, tilt: 0, shrug: 0, eyes: 'dot', mouth: 'smile', brows: 'up', look: [0.4, 0]},
+  {t: 1.3, x: 300, armL: [-0.05, 0.2], armR: [0.06, 0.19], d: 0.4},
+  {t: 1.5, x: 300, armL: [-0.05, 0.2], armR: [0.2, -0.1], tilt: 0.06, mouth: 'talk', look: [0.6, 0]},
+  {t: 3.0, x: 300, armL: [-0.05, 0.2], armR: [0.06, 0.19], tilt: 0, mouth: 'smile', look: [0.6, 0]},
+  {t: 4.7, x: 300, armL: [-0.05, 0.2], armR: [0.12, -0.2], mouth: 'flat', look: [0.3, 0.3]},
+  {t: 5.92, x: 300, armL: [-0.32, -0.32], armR: [0.12, -0.2], shrug: 1, lean: -0.06, eyes: 'wide', mouth: 'shout', brows: 'worried', look: [0, 0], d: 0.18},
+  {t: 7.4, x: 300, armL: [-0.22, 0.02], armR: [0.12, -0.2], shrug: 0.3, lean: 0, eyes: 'wide', mouth: 'open', brows: 'worried', look: [0.7, 0]},
+  {t: 9.2, x: 335, armL: [-0.24, 0.0], armR: [0.12, -0.2], lean: 0.11, shrug: 0, eyes: 'wide', mouth: 'shout', brows: 'angry', look: [0.8, 0]},
+  {t: 10.6, x: 335, armL: [-0.22, 0.08], armR: [0.12, -0.2], lean: 0.08, eyes: 'wide', mouth: 'grit', brows: 'angry', look: [0.8, 0]},
+  {t: 13.2, x: 320, armL: [-0.14, 0.1], armR: [0.12, -0.2], lean: -0.03, eyes: 'wide', mouth: 'o', brows: 'up', look: [0.9, -0.7], tilt: 0.08},
+  {t: 16.7, x: 320, armL: [-0.32, -0.36], armR: [0.12, -0.2], lean: -0.05, shrug: 0.9, eyes: 'wide', mouth: 'shout', brows: 'worried', look: [0.9, -0.6], tilt: 0, d: 0.2},
+  {t: 17.9, x: 320, armL: [-0.2, 0.05], armR: [0.12, -0.2], shrug: 0.2, eyes: 'wide', mouth: 'open', brows: 'up', look: [0.9, -0.6]}
+];
+const NINO = [
+  {t: 0, x: 820, armL: [-0.2, -0.5], armR: [0.06, 0.19], shrug: 0, tilt: -0.06, lean: 0, eyes: 'dot', mouth: 'smile', brows: 'none', look: [-0.6, -0.5]},
+  {t: 2.4, x: 820, armL: [-0.14, -0.04], armR: [0.06, 0.19], tilt: 0, look: [-0.6, 0], d: 0.35},
+  {t: 3.1, x: 820, armL: [-0.16, -0.26], armR: [0.06, 0.19], mouth: 'talk', look: [-0.6, 0]},
+  {t: 4.4, x: 820, armL: [-0.16, -0.22], armR: [0.06, 0.19], mouth: 'smile', eyes: 'happy'},
+  {t: 7.6, x: 820, armL: [-0.16, -0.22], armR: [0.14, 0.04], mouth: 'talk', eyes: 'dot', brows: 'up', look: [-0.6, 0]},
+  {t: 8.9, x: 820, armL: [-0.16, -0.22], armR: [0.06, 0.19], mouth: 'smile', eyes: 'happy', brows: 'none'},
+  {t: 11.0, x: 820, armL: [-0.3, -0.08], armR: [0.3, -0.08], shrug: 1, tilt: 0.08, mouth: 'talk', eyes: 'dot', brows: 'raise1', look: [-0.6, 0]},
+  {t: 12.4, x: 820, armL: [-0.3, -0.08], armR: [0.3, -0.08], shrug: 0.6, tilt: 0.08, mouth: 'smirk', eyes: 'dot', brows: 'raise1'},
+  {t: 13.2, x: 820, armL: [-0.06, 0.19], armR: [0.06, 0.19], shrug: 0, tilt: -0.06, mouth: 'o', eyes: 'wide', brows: 'up', look: [-0.9, -0.7]}
+];
+
+const BUBBLES = [
+  {t: 1.5, end: 4.6, who: 'salvo', text: 'Nino, quanto ti è arrivata la luce?', cx: 330, top: 520, maxW: 400},
+  {t: 3.1, end: 4.6, who: 'nino', text: 'Ce l’ho qua.', cx: 840, top: 520},
+  {t: 6.0, end: 7.35, who: 'salvo', text: 'Ma abitiamo nello stesso palazzo!', cx: 540, top: 450, shout: true, maxW: 520},
+  {t: 7.65, end: 9.2, who: 'nino', text: 'Eh. Stessi metri, stessa lavatrice.', cx: 800, top: 470, maxW: 320},
+  {t: 9.45, end: 13.2, who: 'salvo', text: 'E tu che hai fatto?!', cx: 330, top: 470, shout: true, maxW: 320},
+  {t: 11.0, end: 13.2, who: 'nino', text: 'Ho guardato una riga.', cx: 810, top: 480, maxW: 300},
+  {t: 14.8, end: 18.2, who: 'lumo', text: 'C’è una riga in bolletta che quasi nessuno guarda.', cx: 540, top: 440, maxW: 620},
+  {t: 16.75, end: 18.2, who: 'salvo', text: 'QUALE?!', cx: 240, top: 600, shout: true}
+];
+const heads = {};
+
+function androne(t) {
+  // muro con luce che entra dal portone
+  const g = ctx.createLinearGradient(PX, 0, PX + PW, 0); g.addColorStop(0, '#F6F8FC'); g.addColorStop(1, '#E6ECF5');
+  ctx.fillStyle = g; ctx.fillRect(PX - 400, PY - 400, PW + 800, WALL - PY + 400);
+  ctx.fillStyle = '#DCE3EE'; ctx.fillRect(PX - 400, WALL - 150, PW + 800, 150);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(PX - 400, WALL - 150); ctx.lineTo(PX + PW + 400, WALL - 150); ctx.stroke();
+  // pavimento a piastrelle in prospettiva
+  ctx.fillStyle = '#C9D3E3'; ctx.fillRect(PX - 400, WALL, PW + 800, 600);
+  ctx.strokeStyle = '#B4C0D4'; ctx.lineWidth = 3;
+  for (let k = -8; k <= 18; k++) { ctx.beginPath(); ctx.moveTo(PX + k * 70, WALL); ctx.lineTo(PX + (k - 4) * 110 + 300, WALL + 400); ctx.stroke(); }
+  [WALL + 30, WALL + 75, WALL + 140].forEach(y => { ctx.beginPath(); ctx.moveTo(PX - 400, y); ctx.lineTo(PX + PW + 400, y); ctx.stroke(); });
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(PX - 400, WALL); ctx.lineTo(PX + PW + 400, WALL); ctx.stroke();
+  // lampada al soffitto
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(700, PY - 50); ctx.lineTo(700, 470); ctx.stroke();
+  ctx.fillStyle = '#26334D'; ctx.beginPath(); ctx.moveTo(660, 500); ctx.lineTo(740, 500); ctx.lineTo(718, 468); ctx.lineTo(682, 468); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#FFE59A'; ctx.beginPath(); ctx.arc(700, 504, 12, 0, Math.PI); ctx.fill();
+  // portone a vetri con cornice
+  ctx.fillStyle = '#7C8AA5'; rr(70, 520, 250, WALL - 520, 12); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#9AAAC4'; rr(84, 534, 222, WALL - 534, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#CFE7FF'; rr(100, 552, 86, 360, 8); ctx.fill(); ctx.stroke(); rr(204, 552, 86, 360, 8); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(116, 640); ctx.lineTo(160, 590); ctx.moveTo(220, 640); ctx.lineTo(264, 590); ctx.stroke();
+  ctx.fillStyle = YEL; ctx.beginPath(); ctx.arc(194, 980, 10, 0, 7); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.stroke();
+  // interruttore
+  ctx.fillStyle = WH; rr(352, 960, 34, 50, 6); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#C9D3E3'; ctx.fillRect(364, 972, 10, 22);
+  // scale con corrimano
+  ctx.fillStyle = '#C9D3E3'; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
+  let x0 = 1040, y0 = WALL; ctx.beginPath(); ctx.moveTo(x0, y0);
+  for (let k = 0; k < 8; k++) { ctx.lineTo(x0 - 40, y0); x0 -= 40; ctx.lineTo(x0, y0 - 52); y0 -= 52; }
+  ctx.lineTo(1040, y0); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(1040, WALL - 590); ctx.lineTo(880, WALL - 170); ctx.stroke();
+  for (let k = 0; k < 4; k++) { ctx.lineWidth = 4; ctx.beginPath(); const px = 1010 - k * 40, py = WALL - 590 + (k + 0.6) * 105; ctx.moveTo(px, py); ctx.lineTo(px, py + 150); ctx.stroke(); }
+  // cassette della posta
+  const lt = t - S[3];
+  ctx.fillStyle = '#7C8AA5'; rr(MB.x - 16, MB.y - 16, MB.w * 3 + 32, MB.h * 3 + 32, 10); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke();
+  const rattle = (t > S[3] && t < S[3] + 0.75) ? Math.sin(t * 80) * 4 : 0;
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+    const lumo = r === LUMO_BOX.r && c === LUMO_BOX.c;
+    const x = MB.x + c * MB.w + (lumo ? rattle : 0), y = MB.y + r * MB.h;
+    ctx.fillStyle = '#16233A'; ctx.fillRect(x + 6, y + 6, MB.w - 12, MB.h - 12);
+    let open = 0;
+    if (lumo && t > S[3] + 0.7) open = ebk((t - S[3] - 0.7) / 0.25);
+    if (r === 2 && c === 2 && t > 0.3 && t < 2.6) open = 0.85 * eo((t - 0.3) / 0.3);
+    if (r === 2 && c === 2 && t >= 2.6) open = 0.85 * (1 - eo((t - 2.6) / 0.3));
+    const dw = (MB.w - 12) * (1 - clamp(open));
+    ctx.fillStyle = '#C9D3E3'; ctx.fillRect(x + 6, y + 6, dw, MB.h - 12); ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.strokeRect(x + 6, y + 6, MB.w - 12, MB.h - 12);
+    if (open < 0.5) { ctx.fillStyle = NAVY; ctx.fillRect(x + 20, y + 20, (MB.w - 40) * (1 - open), 6); ctx.fillStyle = YEL; ctx.fillRect(x + 20, y + 40, (MB.w - 40) * (1 - open) * 0.7, 12); }
+  }
+  if (t > S[3] && t < S[3] + 0.75) { ctx.strokeStyle = NAVY; ctx.lineWidth = 6; ctx.lineCap = 'round'; const bx = MB.x + MB.w * 1.5, by = MB.y + MB.h * 1.5; [[-1, -1], [1, -1], [-1.2, 0.2], [1.2, 0.2]].forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(bx + a * 66, by + b * 54); ctx.lineTo(bx + a * 92, by + b * 76); ctx.stroke(); }); }
+  // pianta in primo piano
+  ctx.fillStyle = '#2FBF71'; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
+  [[-34, -70, -0.4], [0, -105, 0], [34, -70, 0.4], [-18, -40, -0.8], [20, -44, 0.8]].forEach(([dx, dy, a]) => { ctx.beginPath(); ctx.ellipse(470 + dx, FLOOR - 70 + dy + Math.sin(t * 2 + dx) * 2, 24, 50, a, 0, 7); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = YEL; rr(436, FLOOR - 82, 68, 82, 10); ctx.fill(); ctx.stroke();
+}
+
+function billSmall(x, y, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a);
+  ctx.fillStyle = WH; rr(-48, -126, 96, 126, 8); ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.stroke();
+  ctx.fillStyle = NAVY; ctx.fillRect(-30, -106, 48, 10);
+  ctx.fillStyle = '#C9D3E3'; for (let k = 0; k < 3; k++) ctx.fillRect(-30, -86 + k * 18, 60 - (k === 2 ? 20 : 0), 7);
+  ctx.fillStyle = '#2FBF71'; rr(-30, -36, 60, 18, 5); ctx.fill();
+  ctx.restore();
+}
+function billLong(hx, hy, p, t) {
+  const w = 110, floorY = FLOOR - 6;
+  const pp = ebk(p);
+  const down = Math.min(1, pp * 1.35) * (floorY - hy + 30), along = Math.max(0, pp * 1.35 - 1) / 0.35 * 260;
+  ctx.fillStyle = WH; ctx.strokeStyle = NAVY; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.rect(hx - w / 2, hy - 30, w, down); ctx.fill(); ctx.stroke();
+  if (along > 0) { ctx.beginPath(); ctx.moveTo(hx - w / 2, floorY - 24); ctx.lineTo(hx - w / 2 + w + along, floorY - 24); ctx.quadraticCurveTo(hx + w / 2 + along + 30, floorY - 40, hx + w / 2 + along + 10, floorY - 64); ctx.quadraticCurveTo(hx + w / 2 + along - 20, floorY - 30, hx + w / 2 + along, floorY); ctx.lineTo(hx - w / 2, floorY); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = '#C9D3E3';
+  for (let yy = hy - 10, k = 0; yy < hy - 30 + down - 14; yy += 22, k++) ctx.fillRect(hx - 38, yy, k % 2 ? 54 : 76, 7);
+  if (down > 140) { ctx.fillStyle = '#E5484D'; rr(hx - 38, hy - 30 + down - 42, 76, 20, 5); ctx.fill(); }
+}
+
+function bubble(b, t) {
+  if (t < b.t || t >= b.end) return;
+  const p = eo((t - b.t) / 0.2), out = 1 - eo((t - (b.end - 0.16)) / 0.16);
+  const size = 44, lh = size * 1.22;
+  const lines = wrap(b.text, size, 700, b.maxW || 520);
+  font(size, 700);
+  const w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 64, h = lines.length * lh + 40;
+  const x = Math.max(84, Math.min(940 - w, b.cx - w / 2)), y = b.top;
+  const hw = heads[b.who] ? toScreen(heads[b.who]) : {x: b.cx, y: b.top + h + 120};
+  const tipX = lerp(x + w / 2, hw.x, 0.8), tipY = Math.max(y + h + 26, hw.y - 34);
+  const baseX = Math.max(x + 50, Math.min(x + w - 50, lerp(x + w / 2, hw.x, 0.5)));
+  ctx.save(); ctx.globalAlpha = p * out;
+  const sc = lerp(0.6, 1, ebk((t - b.t) / 0.28)) * (b.shout ? 1 + 0.03 * Math.sin(t * 40) : 1);
+  ctx.translate(x + w / 2, y + h / 2); ctx.scale(sc, sc); ctx.translate(-(x + w / 2), -(y + h / 2));
+  // ombra del fumetto
+  ctx.fillStyle = 'rgba(14,34,64,.18)'; rr(x + 8, y + 10, w, h, 36); ctx.fill();
+  ctx.lineJoin = 'round'; ctx.lineWidth = 6; ctx.strokeStyle = NAVY; ctx.fillStyle = b.shout ? YEL : WH;
+  ctx.beginPath(); ctx.moveTo(baseX - 24, y + h - 4); ctx.quadraticCurveTo(lerp(baseX, tipX, 0.4), lerp(y + h, tipY, 0.5), tipX, tipY); ctx.quadraticCurveTo(lerp(baseX, tipX, 0.6) + 10, lerp(y + h, tipY, 0.4), baseX + 24, y + h - 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+  if (b.shout) {
+    ctx.beginPath(); const n = 24;
+    for (let k = 0; k <= n; k++) { const a = k / n * Math.PI * 2, r = (k % 2 ? 1.0 : 1.1); const px = x + w / 2 + Math.cos(a) * (w / 2 + 18) * r, py = y + h / 2 + Math.sin(a) * (h / 2 + 18) * r; k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else { rr(x, y, w, h, 36); ctx.fill(); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(baseX - 18, y + h - 7); ctx.lineTo(baseX + 18, y + h - 7); ctx.lineTo(lerp(baseX, tipX, 0.2), lerp(y + h, tipY, 0.2)); ctx.closePath(); ctx.fill();
+  // il testo si scrive mentre il personaggio parla
+  const total = lines.join(' ').length, shown = b.shout ? total : Math.floor(total * clamp((t - b.t - 0.08) / Math.max(0.5, total * 0.03)));
+  let left = shown;
+  lines.forEach((l, k) => { const part = l.slice(0, Math.max(0, left)); left -= l.length + 1; txt(part, x + w / 2 - ctx.measureText(l).width / 2, y + 20 + size * 0.98 + k * lh, size, 700, NAVY, 'left'); });
+  ctx.restore();
+}
+
+function caption(text, t) {
+  font(38, 700); const w = ctx.measureText(text).width + 44;
+  const p = 1 - eo((t - 4.2) / 0.3); if (p <= 0) return;
+  ctx.save(); ctx.globalAlpha = p; ctx.fillStyle = YEL; ctx.fillRect(PX + 18, PY + 18, w, 64);
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.strokeRect(PX + 18, PY + 18, w, 64);
+  txt(text, PX + 40, PY + 64, 38, 700, NAVY); ctx.restore();
+}
+
+function endCard(t) {
+  const lt = t - S[4];
+  ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  // raggi di luce che girano dietro Lumo
+  ctx.save(); ctx.globalAlpha = 0.07 * clamp(lt / 0.6); ctx.fillStyle = YEL; ctx.translate(540, 650); ctx.rotate(lt * 0.3);
+  for (let k = 0; k < 12; k++) { ctx.rotate(Math.PI / 6); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-90, -900); ctx.lineTo(90, -900); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+  wire([0, 1, 2, 3, 4].map(k => eo((lt - 0.25 - k * 0.12) / 0.18)), t);
+  const s = 5.0 * ebk((lt - 0.05) / 0.5), land = clamp((lt - 0.05) / 0.5);
+  const sq = lt < 0.55 ? lerp(1.25, 1, land) : 1 - 0.12 * Math.max(0, Math.sin((lt - 0.55) * 14)) * Math.exp(-(lt - 0.55) * 5);
+  if (s > 0.2) {
+    rays(540, 650, 28 * s + 26, 38 * ebk((lt - 0.5) / 0.4), 7, 200, 340, 13, YEL, clamp((lt - 0.5) / 0.2));
+    const point = lt > 1.4;
+    mascot(540, 650 + 8 * Math.sin(t * 2.6), s, {fill: YEL, cap: WH, ink: NAVY, t: t, sq: sq, open: (lt > 3.0 && lt < 3.12) ? 0.1 : 1, px: point ? -0.6 : 0, py: point ? 2.5 : -1, wink: lt > 3.6 && lt < 4.1,
+      mouth: lt > 0.55 && lt < 1.8 ? 'talk' : 'smile', brows: [{dy: -1, tilt: 0}, {dy: -3, tilt: -1.4}],
+      arms: point ? {l: [-16, 18], r: [18, lerp(-10, 30, eo((lt - 1.4) / 0.3)), 'point', 4, 12]} : {l: [-18, 14], r: [18, -14]}});
+  }
+  const words1 = ['E', 'tu,', 'quella', 'riga,'], words2 = ['l’hai', 'mai', 'guardata?'];
+  const line = (ws, y, col, t0) => { font(70, 700); const total = ws.map(w2 => ctx.measureText(w2 + ' ').width).reduce((a, b) => a + b, 0); let xx = 540 - total / 2; ws.forEach((w2, k) => { const a = ebk((lt - t0 - k * 0.09) / 0.3); if (a > 0) { ctx.save(); const ww = ctx.measureText(w2).width; ctx.translate(xx + ww / 2, y); ctx.scale(a, a); txt(w2, -ww / 2, 0, 70, 700, col, 'left', clamp(a)); ctx.restore(); } xx += ctx.measureText(w2 + ' ').width; }); };
+  line(words1, 1000, WH, 0.5); line(words2, 1084, YEL, 0.85);
+  const p = eo((lt - 1.25) / 0.5);
+  if (p > 0) {
+    ctx.save(); ctx.translate(-(1 - p) * 1080, 0);
+    ctx.fillStyle = YEL; ctx.fillRect(0, 1145, W, 300);
+    txt('Mandaci la foto della bolletta', 84, 1218, fit('Mandaci la foto della bolletta', 48, 700, 856), 700, NAVY);
+    txt('su WhatsApp, te la guardiamo gratis.', 84, 1278, fit('su WhatsApp, te la guardiamo gratis.', 48, 700, 856), 500, NAVY);
+    const pulse = 1 + 0.035 * Math.max(0, Math.sin((lt - 2) * 4));
+    ctx.save(); ctx.translate(84, 1394); ctx.scale(pulse, pulse); txt('+39 375 504 9079', 0, 0, fit('+39 375 504 9079', 92, 700, 820), 700, NAVY); ctx.restore();
+    ctx.restore();
+  }
+  logo(84, 1505, 40, WH, eo((lt - 0.4) / 0.4));
+}
+
+window.render = function (t) {
+  const i = scene(t);
+  for (const k in heads) delete heads[k];
+  ctx.globalAlpha = 1; ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
+  if (i === 4) { endCard(t); return; }
+  const z1 = fit('Stessa casa, stessa luce.', 64, 700, 900);
+  txt('Stessa casa, stessa luce.', 84, 318, z1, 700, WH);
+  txt('Bolletta diversa.', 84, 392, z1, 700, YEL);
+
+  cam = camAt(CAM, t);
+  const shake = (t > 5.92 && t < 6.25) || (t > 16.75 && t < 17.0) ? Math.sin(t * 90) * 8 : 0;
+  ctx.save();
+  ctx.beginPath(); ctx.rect(PX, PY, PW, PH); ctx.clip();
+  ctx.translate(CX + shake, CY); ctx.scale(cam.z, cam.z); ctx.translate(-cam.x, -cam.y);
+  androne(t);
+  // linee di velocità nei momenti di sorpresa
+  speedLines(300, 840, t, (t > 5.92 && t < 7.3) ? 1 - eo((t - 7.0) / 0.3) : 0);
+  speedLines(580, 760, t, (t > 14.0 && t < 14.9) ? 1 - eo((t - 14.6) / 0.3) : 0);
+
+  // Nino
+  const N = track(NINO, t);
+  N.kind = 'nino';
+  if (t > 2.4) N.holdL = (x, y) => billSmall(x + 6, y + 18, -0.12);
+  if (Math.abs(((t + 0.9) % 3.4) - 3.3) < 0.08 && N.eyes === 'dot') N.eyes = 'closed';
+  person(N.x, FLOOR, 570, N, t, heads);
+
+  // Salvo
+  const Sa = track(SALVO, t);
+  Sa.kind = 'salvo';
+  if (t < 1.3) Sa.walk = t * 9;
+  if (Math.abs(((t + 1.8) % 3.1) - 3.0) < 0.08 && Sa.eyes === 'dot') Sa.eyes = 'closed';
+  person(Sa.x, FLOOR, 590, Sa, t, heads);
+  const sm = heads.salvo_mani;
+  if (t > 4.75) billLong(sm.r[0] + 8, sm.r[1] + 6, clamp((t - 5.0) / 1.0), t);
+  // polvere quando la bolletta tocca terra
+  if (t > 5.85 && t < 6.6) { const o = clamp((t - 5.85) / 0.75); ctx.fillStyle = 'rgba(255,255,255,' + (0.9 * (1 - o)) + ')'; ctx.strokeStyle = 'rgba(14,34,64,' + (0.5 * (1 - o)) + ')'; ctx.lineWidth = 3; for (let k = 0; k < 6; k++) { ctx.beginPath(); ctx.arc(sm.r[0] + 60 + k * 50 + o * 30 * (k - 2), FLOOR - 20 - o * 50 - (k % 2) * 16, 16 + o * 22, 0, 7); ctx.fill(); ctx.stroke(); } }
+  // sudore
+  if (t > 9.6 && t < 13.2) { const hd = heads.salvo; [[-95, 40], [100, 20]].forEach(([dx, dy], k) => { const o = ((t * 1.4 + k * 0.5) % 1); ctx.globalAlpha = 1 - o; ctx.fillStyle = '#8FD3FF'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3; const x = hd.x + dx, y = hd.y + dy + o * 50; ctx.beginPath(); ctx.moveTo(x, y - 22); ctx.bezierCurveTo(x + 16, y, x + 14, y + 16, x, y + 16); ctx.bezierCurveTo(x - 14, y + 16, x - 16, y, x, y - 22); ctx.fill(); ctx.stroke(); }); ctx.globalAlpha = 1; }
+
+  // Lumo schizza fuori dalla cassetta
+  if (i === 3 && t > S[3] + 0.75) {
+    const lt = t - S[3] - 0.75, bx = MB.x + MB.w * 1.5, by = MB.y + MB.h * 1.5, rest = 760, s = 2.9;
+    let ly, sq = 1;
+    if (lt < 0.35) { const q = eo(lt / 0.35); ly = lerp(by, 560, q); sq = lerp(1.35, 1.1, q); }
+    else if (lt < 0.65) { const q = ei((lt - 0.35) / 0.3); ly = lerp(560, rest, q); sq = lerp(1.1, 1.2, q); }
+    else { const q = lt - 0.65; ly = rest + Math.sin(t * 3) * 6; sq = 1 - 0.22 * Math.exp(-q * 6) * Math.cos(q * 18); }
+    const glow = clamp((lt - 0.3) / 0.4);
+    if (glow > 0) { const g = ctx.createRadialGradient(bx, ly, 30, bx, ly, 520); g.addColorStop(0, 'rgba(255,197,49,' + (0.4 * glow) + ')'); g.addColorStop(1, 'rgba(255,197,49,0)'); ctx.fillStyle = g; ctx.fillRect(-500, 0, 2200, 2000); }
+    rays(bx, ly, 28 * s + 22, 26 * ebk((lt - 0.65) / 0.4), 7, 200, 340, 10, YEL, glow);
+    const talkL = t > 14.8 && t < 16.4, smug = t > 17.2;
+    mascot(bx, ly, s, {fill: YEL, cap: WH, ink: NAVY, t: t, sq: sq, open: (lt > 2.2 && lt < 2.32) ? 0.1 : 1, px: smug ? -2 : 0, py: 0, wink: smug,
+      mouth: talkL ? 'talk' : (smug ? 'smirk' : 'smile'), brows: smug ? [{dy: -1, tilt: 0}, {dy: -3.5, tilt: -1.6}] : null,
+      arms: talkL ? {l: [-16, 18], r: [16, -26, 'point', 0, -12]} : (smug ? {l: [-16, 18], r: [-4, 18]} : {l: [-22, -16], r: [22, -16]})});
+    heads.lumo = {x: bx, y: ly - 84};
+  }
+  ctx.restore();
+  // cornice
+  ctx.strokeStyle = YEL; ctx.lineWidth = 8; rr(PX, PY, PW, PH, 4); ctx.stroke();
+  caption('Androne del palazzo, ore 8:00', t);
+  BUBBLES.forEach(b => bubble(b, t));
+  if (t > S[4] - 0.22) { ctx.fillStyle = NAVY; ctx.globalAlpha = eo((t - (S[4] - 0.22)) / 0.22); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+  logo(84, 1462, 36, WH);
+};
+ready();
+</script>
+</body>
+</html>
